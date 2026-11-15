@@ -152,8 +152,8 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
     ok(await p.evaluate(() => !JSON.parse(document.getElementById('acervo-dados').textContent).some((x) => x.tipo === 'som' || x.audio)), 'catálogo público sem faixa de som');
     const estado = await p.textContent('#album-estado');
     ok(estado.startsWith(`${TOTAL_PECAS} peças em ${TOTAL_GRUPOS} grupos`), `estado em «Tudo»: ${estado}`);
-    const r = await p.request.get(new URL('media/acervo/voz-do-tata.m4a', url).href);
-    ok(r.status() === 404, `faixa autónoma não publicada (HTTP ${r.status()})`);
+    const estadoFaixa = await p.evaluate(() => fetch('media/acervo/voz-do-tata.m4a', { cache: 'no-store' }).then((r) => r.status));
+    ok(estadoFaixa === 404, `faixa autónoma não publicada (HTTP ${estadoFaixa})`);
     // percorrer «Tudo» com Seguinte e Anterior: nenhuma faixa de som
     await p.click('.grupo .peca');
     const total = +(await p.textContent('#leitor-contador')).split('/')[1];
