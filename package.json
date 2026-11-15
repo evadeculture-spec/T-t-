@@ -1,9 +1,10 @@
 {
   "name": "universo-tata",
   "private": true,
-  "description": "O universo do Tatá — álbum web para folhear no iPad",
+  "description": "O universo do Tatá — portfólio ilustrado, pensado primeiro para telemóvel",
   "scripts": {
-    "build": "python3 scripts/build.py",
+    "importar": "python3 scripts/importar.py originais",
+    "build": "python3 scripts/build.py && python3 scripts/verificar_nomes.py",
     "serve": "cd site && python3 -m http.server 8080",
     "test": "node tests/percurso.cjs http://localhost:8080/",
     "capturas": "node tests/capturas.cjs http://localhost:8080/ capturas"

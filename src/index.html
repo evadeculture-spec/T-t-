@@ -4,13 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>O universo do Tatá</title>
-<meta name="description" content="Um álbum para folhear: o Tatá, a Luna e a estrela pousada no musgo junto ao ribeiro.">
+<meta name="description" content="Ao cair da noite, o Tatá e a Luna encontram uma estrela junto ao ribeiro. Filmes, imagens e estudos do universo do Tatá.">
 <link rel="canonical" href="{{URL}}/">
 <meta name="theme-color" content="#1e2347">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_PT">
+<meta property="og:site_name" content="Tatá">
 <meta property="og:title" content="O universo do Tatá">
-<meta property="og:description" content="Um álbum para folhear: o Tatá, a Luna e a estrela pousada no musgo junto ao ribeiro.">
+<meta property="og:description" content="Ao cair da noite, o Tatá e a Luna encontram uma estrela junto ao ribeiro.">
 <meta property="og:url" content="{{URL}}/">
 <meta property="og:image" content="{{URL}}/og/capa-ribeiro.jpg">
 <meta property="og:image:type" content="image/jpeg">
@@ -22,133 +23,149 @@
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preload" href="fonts/fraunces-latin-full-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" as="image" href="media/ribeiro-descoberta-1280.webp" imagesrcset="media/ribeiro-descoberta-800.webp 800w, media/ribeiro-descoberta-1280.webp 1280w, media/ribeiro-descoberta-1920.webp 1920w" imagesizes="(max-width: 699px) 1px, (orientation: landscape) 75vw, 100vw" media="(min-width: 700px)">
-<link rel="preload" as="image" href="media/ribeiro-descoberta-3x2-900.webp" imagesrcset="media/ribeiro-descoberta-3x2-600.webp 600w, media/ribeiro-descoberta-3x2-900.webp 900w, media/ribeiro-descoberta-3x2-1280.webp 1280w" imagesizes="100vw" media="(max-width: 699px)">
+<link rel="preload" as="image" href="media/ribeiro-descoberta-1280.webp" imagesrcset="media/ribeiro-descoberta-800.webp 800w, media/ribeiro-descoberta-1280.webp 1280w, media/ribeiro-descoberta-1920.webp 1920w" imagesizes="(min-width: 760px) and (orientation: landscape) 58vw, 100vw" fetchpriority="high">
 <link rel="stylesheet" href="styles.css">
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
+
+<header class="topo" id="topo">
+  <a class="topo__marca" href="#topo" aria-label="Tatá, início"><!--#include img/tata-lettering.svg --></a>
+  <a class="topo__album" href="#album"><svg class="estrelinha" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#estrela"/></svg>Álbum</a>
+</header>
+
 <main>
 
-<section class="ribeiro" id="ribeiro" aria-labelledby="titulo">
-  <div class="ribeiro__grelha">
-    <figure class="cena" id="cena">
-      <picture>
-        <source media="(max-width: 699px)" type="image/webp" srcset="media/ribeiro-descoberta-3x2-600.webp 600w, media/ribeiro-descoberta-3x2-900.webp 900w, media/ribeiro-descoberta-3x2-1280.webp 1280w" sizes="100vw">
-        <source media="(max-width: 699px)" srcset="media/ribeiro-descoberta-3x2-600.jpg 600w, media/ribeiro-descoberta-3x2-900.jpg 900w, media/ribeiro-descoberta-3x2-1280.jpg 1280w" sizes="100vw" width="1620" height="1080">
-        <source type="image/webp" srcset="media/ribeiro-descoberta-800.webp 800w, media/ribeiro-descoberta-1280.webp 1280w, media/ribeiro-descoberta-1920.webp 1920w" sizes="(orientation: landscape) 75vw, 100vw">
-        <img src="media/ribeiro-descoberta-1280.jpg" srcset="media/ribeiro-descoberta-800.jpg 800w, media/ribeiro-descoberta-1280.jpg 1280w, media/ribeiro-descoberta-1920.jpg 1920w" sizes="(orientation: landscape) 75vw, 100vw" width="1920" height="1080" fetchpriority="high" decoding="async" alt="Ao crepúsculo, junto a um ribeiro, a Luna e o Tatá olham na mesma direção: uma pequena estrela dourada pousada no musgo da margem.">
-      </picture>
-    </figure>
-
-    <div class="margem">
-      <h1 class="titulo" id="titulo">
-        <span class="titulo__de">O universo do</span>
-        <span class="lettering"><span class="sr-only">Tatá</span><!--#include img/tata-lettering.svg --></span>
-      </h1>
-      <p class="acoes">
-        <a class="folhear" href="#tata" id="folhear">Folhear</a>
-        <a class="ver" href="media/a-descoberta.mp4" id="ver" type="video/mp4"><svg class="ver__estrela" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#estrela"/></svg>Ver a descoberta</a>
-      </p>
-      <!--#include img/fetos.svg -->
-    </div>
+<section class="abertura" id="inicio" aria-labelledby="titulo">
+  <div class="abertura__texto">
+    <h1 class="titulo" id="titulo">
+      <span class="titulo__de">O universo do</span>
+      <span class="lettering"><span class="sr-only">Tatá</span><!--#include img/tata-lettering.svg --></span>
+    </h1>
+    <p class="abertura__frase">Ao cair da noite, o Tatá e a Luna encontram uma estrela junto ao ribeiro.</p>
   </div>
-  <!--#include img/ondas.svg -->
+
+  <figure class="abertura__ribeiro">
+    <a class="abre" href="media/acervo/descoberta.mp4" data-slug="descoberta" aria-label="Ver o filme «A descoberta», 0:08">
+      <picture>
+        <source type="image/webp" srcset="media/ribeiro-descoberta-800.webp 800w, media/ribeiro-descoberta-1280.webp 1280w, media/ribeiro-descoberta-1920.webp 1920w" sizes="(min-width: 760px) and (orientation: landscape) 58vw, 100vw">
+        <img src="media/ribeiro-descoberta-1280.jpg" srcset="media/ribeiro-descoberta-800.jpg 800w, media/ribeiro-descoberta-1280.jpg 1280w, media/ribeiro-descoberta-1920.jpg 1920w" sizes="(min-width: 760px) and (orientation: landscape) 58vw, 100vw" width="1920" height="1080" fetchpriority="high" decoding="async" alt="Ao crepúsculo, junto a um ribeiro, a Luna e o Tatá olham na mesma direção: uma pequena estrela dourada pousada no musgo da margem.">
+      </picture>
+      <span class="abre__selo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>0:08</span>
+    </a>
+  </figure>
+
+  <div class="abertura__acoes">
+    <p class="acoes">
+      <a class="acao acao--principal abre" href="media/acervo/descoberta.mp4" data-slug="descoberta"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5v13l11-6.5z"/></svg>Ver a descoberta</a>
+      <a class="acao acao--album" href="#album" id="explorar">Explorar o álbum</a>
+    </p>
+    <p class="contagem">
+      <a href="#album" data-filtro="filme">{{N_FILMES}}</a><span aria-hidden="true"> · </span><a href="#album" data-filtro="imagem">{{N_IMAGENS}}</a><span aria-hidden="true"> · </span><a href="#album" data-filtro="som">{{N_SONS}}</a>
+    </p>
+  </div>
+
+  <div class="abertura__detalhes">
+    <figure class="detalhe detalhe--aceno">
+      <a class="abre" href="media/acervo/retrato-aceno-1600.jpg" data-slug="retrato-aceno" aria-label="Ver a imagem «O Tatá» inteira">
+        <picture>
+          <source type="image/webp" srcset="media/acervo/retrato-aceno-480.webp 480w, media/acervo/retrato-aceno-960.webp 960w" sizes="(min-width: 760px) and (orientation: landscape) 24vw, 46vw">
+          <img src="media/acervo/retrato-aceno-480.jpg" srcset="media/acervo/retrato-aceno-480.jpg 480w, media/acervo/retrato-aceno-960.jpg 960w" sizes="(min-width: 760px) and (orientation: landscape) 24vw, 46vw" width="960" height="536" loading="lazy" decoding="async" alt="O Tatá sentado, a acenar com a pata esquerda.">
+        </picture>
+      </a>
+      <figcaption>O aceno</figcaption>
+    </figure>
+    <figure class="detalhe detalhe--luna">
+      <a class="abre" href="media/acervo/tata-e-luna.mp4" data-slug="tata-e-luna" aria-label="Ver o filme «O Tatá e a Luna», 0:08">
+        <picture>
+          <source type="image/webp" srcset="media/luna-aproxima-480.webp 480w, media/luna-aproxima-800.webp 800w, media/luna-aproxima-1200.webp 1200w" sizes="(min-width: 760px) and (orientation: landscape) 20vw, 46vw">
+          <img src="media/luna-aproxima-480.jpg" srcset="media/luna-aproxima-480.jpg 480w, media/luna-aproxima-800.jpg 800w, media/luna-aproxima-1200.jpg 1200w" sizes="(min-width: 760px) and (orientation: landscape) 20vw, 46vw" width="1440" height="1080" loading="lazy" decoding="async" alt="A Luna aproxima-se do Tatá e olha para ele; o Tatá acena.">
+        </picture>
+        <span class="abre__selo abre__selo--peq" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>0:08</span>
+      </a>
+      <figcaption>A Luna aproxima-se</figcaption>
+    </figure>
+  </div>
+  <!--#include img/fetos.svg -->
 </section>
 
-<section class="retrato" id="tata" tabindex="-1" aria-labelledby="tata-titulo">
+<div class="passagem" aria-hidden="true"><!--#include img/linha-agua.svg --></div>
+
+<section class="album" id="album" tabindex="-1" aria-labelledby="album-titulo">
+  <div class="album__cabeca">
+    <h2 class="album__titulo" id="album-titulo">Álbum</h2>
+    <div class="filtros" role="group" aria-label="Mostrar">
+      <button type="button" class="filtro" data-filtro="tudo" aria-pressed="true">Tudo</button>
+      <button type="button" class="filtro" data-filtro="filme" aria-pressed="false">Filmes</button>
+      <button type="button" class="filtro" data-filtro="imagem" aria-pressed="false">Imagens</button>
+      <button type="button" class="filtro" data-filtro="som" aria-pressed="false">Som</button>
+    </div>
+  </div>
+  <p class="album__estado" id="album-estado" aria-live="polite"></p>
+  <div class="grelha" id="grelha">
+{{ALBUM}}
+  </div>
+  <p class="album__mais"><button type="button" class="mais" id="mais" hidden>Mostrar mais</button></p>
+</section>
+
+<section class="retrato" id="tata" aria-labelledby="tata-titulo">
+  <!--#include img/costura.svg -->
   <h2 class="retrato__titulo" id="tata-titulo">Do peluche ao desenho</h2>
   <div class="par">
     <figure class="par__peluche">
       <picture>
-        <source type="image/webp" srcset="media/peluche-original-500.webp 500w, media/peluche-original-700.webp 700w" sizes="(min-width: 700px) 42vw, 48vw">
-        <img src="media/peluche-original-500.jpg" srcset="media/peluche-original-500.jpg 500w, media/peluche-original-700.jpg 700w" sizes="(min-width: 700px) 42vw, 48vw" width="700" height="730" loading="lazy" decoding="async" alt="Fotografia do peluche artesanal do Tatá, pousado na palma de uma mão: braço esquerdo levantado, braços e pernas pretos com manchas creme.">
+        <source type="image/webp" srcset="media/acervo/peluche-480.webp 480w, media/acervo/peluche-960.webp 960w" sizes="(min-width: 700px) 42vw, 48vw">
+        <img src="media/acervo/peluche-480.jpg" srcset="media/acervo/peluche-480.jpg 480w, media/acervo/peluche-960.jpg 960w" sizes="(min-width: 700px) 42vw, 48vw" width="700" height="730" loading="lazy" decoding="async" alt="Fotografia do peluche artesanal do Tatá, pousado na palma de uma mão: braço levantado, braços e pernas pretos com manchas creme.">
       </picture>
     </figure>
     <figure class="par__desenho">
       <picture>
-        <source type="image/webp" srcset="media/tata-acena-600.webp 600w, media/tata-acena-1000.webp 1000w, media/tata-acena-1510.webp 1510w" sizes="(min-width: 700px) 46vw, 50vw">
-        <img src="media/tata-acena-1000.jpg" srcset="media/tata-acena-600.jpg 600w, media/tata-acena-1000.jpg 1000w, media/tata-acena-1510.jpg 1510w" sizes="(min-width: 700px) 46vw, 50vw" width="1510" height="1536" loading="lazy" decoding="async" alt="O Tatá desenhado, sentado, a acenar com a pata esquerda: pelo creme, orelhas pretas, olhos castanhos, dobra ao pescoço, costura no peito e as mesmas manchas nas patas.">
+        <source type="image/webp" srcset="media/acervo/retrato-aceno-480.webp 480w, media/acervo/retrato-aceno-960.webp 960w" sizes="(min-width: 700px) 46vw, 50vw">
+        <img src="media/acervo/retrato-aceno-960.jpg" srcset="media/acervo/retrato-aceno-480.jpg 480w, media/acervo/retrato-aceno-960.jpg 960w" sizes="(min-width: 700px) 46vw, 50vw" width="960" height="536" loading="lazy" decoding="async" alt="O Tatá desenhado, sentado, a acenar: pelo creme, orelhas pretas, olhos castanhos, dobra ao pescoço, costura no peito e as mesmas manchas nas patas.">
       </picture>
     </figure>
-    <!--#include img/costura.svg -->
   </div>
-</section>
-
-<section class="album" id="album" aria-labelledby="album-titulo">
-  <h2 class="sr-only" id="album-titulo">Álbum</h2>
-
-  <div class="pagina pagina--luna">
-    <figure class="peca peca--luna">
-      <button class="peca__botao" type="button" data-full="media/luna-cachecol-1500.jpg" data-w="1500" data-h="1536" aria-label="Ampliar: a Luna, de cachecol azul">
-        <picture>
-          <source type="image/webp" srcset="media/luna-cachecol-600.webp 600w, media/luna-cachecol-1000.webp 1000w" sizes="(min-width: 700px) 44vw, 100vw">
-          <img src="media/luna-cachecol-600.jpg" srcset="media/luna-cachecol-600.jpg 600w, media/luna-cachecol-1000.jpg 1000w" sizes="(min-width: 700px) 44vw, 100vw" width="1500" height="1536" loading="lazy" decoding="async" alt="A Luna, raposa ruiva de focinho claro, de frente, com um cachecol azul de tricô.">
-        </picture>
-      </button>
-      <figcaption>A Luna, de cachecol azul.</figcaption>
-    </figure>
-  </div>
-
-  <div class="pagina pagina--gestos">
-    <figure class="peca peca--ramo">
-      <button class="peca__botao" type="button" data-full="media/ramo-ate-a-estrela-1920.jpg" data-w="1920" data-h="1080" aria-label="Ampliar: o Tatá estende um ramo para a estrela">
-        <picture>
-          <source type="image/webp" srcset="media/ramo-ate-a-estrela-800.webp 800w, media/ramo-ate-a-estrela-1280.webp 1280w" sizes="(min-width: 700px) 50vw, 100vw">
-          <img src="media/ramo-ate-a-estrela-800.jpg" srcset="media/ramo-ate-a-estrela-800.jpg 800w, media/ramo-ate-a-estrela-1280.jpg 1280w" sizes="(min-width: 700px) 50vw, 100vw" width="1920" height="1080" loading="lazy" decoding="async" alt="À beira da água, o Tatá estende um ramo em direção à estrela; a Luna, sentada ao lado, observa.">
-        </picture>
-      </button>
-      <figcaption>Um ramo estendido em direção à estrela.</figcaption>
-    </figure>
-    <figure class="peca peca--tronco">
-      <button class="peca__botao" type="button" data-full="media/travessia-tronco-1920.jpg" data-w="1920" data-h="1080" aria-label="Ampliar: o Tatá sobe para um tronco sobre a água">
-        <picture>
-          <source type="image/webp" srcset="media/travessia-tronco-800.webp 800w, media/travessia-tronco-1280.webp 1280w" sizes="(min-width: 700px) 40vw, 100vw">
-          <img src="media/travessia-tronco-800.jpg" srcset="media/travessia-tronco-800.jpg 800w, media/travessia-tronco-1280.jpg 1280w" sizes="(min-width: 700px) 40vw, 100vw" width="1920" height="1080" loading="lazy" decoding="async" alt="O Tatá apoia as patas num tronco caído sobre o ribeiro; a Luna espera na margem, atrás dele.">
-        </picture>
-      </button>
-      <figcaption>Um tronco por cima da água.</figcaption>
-    </figure>
-  </div>
-
-  <div class="pagina pagina--colina">
-    <figure class="peca peca--colina">
-      <button class="peca__botao" type="button" data-full="media/colina-noite-1920.jpg" data-w="1920" data-h="1080" aria-label="Ampliar: os dois no alto da colina, à noite">
-        <picture>
-          <source type="image/webp" srcset="media/colina-noite-800.webp 800w, media/colina-noite-1280.webp 1280w, media/colina-noite-1920.webp 1920w" sizes="100vw">
-          <img src="media/colina-noite-1280.jpg" srcset="media/colina-noite-800.jpg 800w, media/colina-noite-1280.jpg 1280w, media/colina-noite-1920.jpg 1920w" sizes="100vw" width="1920" height="1080" loading="lazy" decoding="async" alt="De costas, a Luna e o Tatá no alto de uma colina, sob um céu azul-noite; ao longe brilha uma estrela.">
-        </picture>
-      </button>
-      <figcaption>No alto da colina, debaixo do céu.</figcaption>
-    </figure>
-  </div>
+  <p class="retrato__legenda">As mesmas manchas creme nas patas pretas, a mesma dobra ao pescoço.</p>
 </section>
 
 <section class="fecho" id="fecho" aria-labelledby="fecho-titulo">
   <h2 class="sr-only" id="fecho-titulo">A Luna e o Tatá</h2>
   <figure class="fecho__imagem">
     <picture>
-      <source type="image/webp" srcset="media/luna-encostada-800.webp 800w, media/luna-encostada-1280.webp 1280w, media/luna-encostada-2232.webp 2232w" sizes="(min-width: 1200px) 1100px, 100vw">
-      <img src="media/luna-encostada-1280.jpg" srcset="media/luna-encostada-800.jpg 800w, media/luna-encostada-1280.jpg 1280w, media/luna-encostada-2232.jpg 2232w" sizes="(min-width: 1200px) 1100px, 100vw" width="2232" height="1198" loading="lazy" decoding="async" alt="A Luna encosta-se ao Tatá, de olhos fechados; o focinho dela fica a um palmo do dele, e o Tatá olha-a de lado, a sorrir.">
+      <source type="image/webp" srcset="media/acervo/luna-encostada-480.webp 480w, media/acervo/luna-encostada-960.webp 960w" sizes="(min-width: 1200px) 1100px, 100vw">
+      <img src="media/acervo/luna-encostada-960.jpg" srcset="media/acervo/luna-encostada-480.jpg 480w, media/acervo/luna-encostada-960.jpg 960w, media/acervo/luna-encostada-1600.jpg 1600w" sizes="(min-width: 1200px) 1100px, 100vw" width="2232" height="1198" loading="lazy" decoding="async" alt="A Luna encosta-se ao Tatá, de olhos fechados; o focinho dela fica a um palmo do dele, e o Tatá olha-a de lado, a sorrir.">
     </picture>
   </figure>
-  <p class="assinatura">Tatá · João e Márcia</p>
-  <p><a class="voltar" href="#ribeiro">Voltar ao ribeiro</a></p>
+  <p class="assinatura"><!--#include img/tata-lettering.svg --><span class="sr-only">Tatá</span></p>
+  <p><a class="voltar" href="#topo">Voltar ao ribeiro</a></p>
 </section>
 
 </main>
 
-<dialog class="ampliar" id="ampliar" aria-labelledby="ampliar-legenda">
-  <figure class="ampliar__figura">
-    <img id="ampliar-img" alt="">
-    <figcaption id="ampliar-legenda"></figcaption>
-  </figure>
-  <button class="ampliar__fechar" type="button" id="ampliar-fechar">Fechar</button>
+<dialog class="leitor" id="leitor" aria-labelledby="leitor-titulo">
+  <div class="leitor__topo">
+    <p class="leitor__contador" id="leitor-contador"></p>
+    <button type="button" class="leitor__som" id="leitor-som" aria-pressed="false" hidden>Som desligado</button>
+    <button type="button" class="leitor__btn" id="leitor-fechar">Fechar</button>
+  </div>
+  <div class="leitor__palco" id="leitor-palco"></div>
+  <div class="leitor__rodape">
+    <button type="button" class="leitor__btn leitor__nav" id="leitor-ant" aria-label="Anterior"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="leitor__texto">
+      <h2 class="leitor__titulo" id="leitor-titulo"></h2>
+      <p class="leitor__legenda" id="leitor-legenda"></p>
+    </div>
+    <button type="button" class="leitor__btn leitor__nav" id="leitor-seg" aria-label="Seguinte"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></button>
+  </div>
 </dialog>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-  <defs><path id="estrela" d="M50 7 C 53 7, 55 9, 56.5 13 L 63.5 32 L 84 33.5 C 92 34, 94 39, 88 44 L 72 57 L 77.5 77 C 79.5 85, 75 88, 68 84 L 50 72.5 L 32 84 C 25 88, 20.5 85, 22.5 77 L 28 57 L 12 44 C 6 39, 8 34, 16 33.5 L 36.5 32 L 43.5 13 C 45 9, 47 7, 50 7 Z"/></defs>
+  <defs>
+    <path id="estrela" d="M50 7 C 53 7, 55 9, 56.5 13 L 63.5 32 L 84 33.5 C 92 34, 94 39, 88 44 L 72 57 L 77.5 77 C 79.5 85, 75 88, 68 84 L 50 72.5 L 32 84 C 25 88, 20.5 85, 22.5 77 L 28 57 L 12 44 C 6 39, 8 34, 16 33.5 L 36.5 32 L 43.5 13 C 45 9, 47 7, 50 7 Z"/>
+    <path id="onda-som" d="M4 30 Q 20 6 36 30 T 68 30 T 100 30 T 132 30 T 164 30 T 196 30 T 236 30" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  </defs>
 </svg>
+<script type="application/json" id="acervo-dados">{{ACERVO_JSON}}</script>
 <script src="app.js" defer></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
-/* O universo do Tatá — estilos
-   Cores extraídas dos originais: céu e água da cena do ribeiro, dourado da estrela,
+/* O universo do Tatá — estilos (telemóvel primeiro)
+   Cores amostradas nos originais: céu e água do ribeiro, dourado da estrela,
    creme do pelo do Tatá, laranja da Luna. */
 
 @font-face {
@@ -16,10 +16,10 @@
 :root {
   /* crepúsculo */
   --noite: #1e2347;
-  --noite-funda: #171b38;
+  --noite-funda: #151934;
+  --violeta: #2c2b5e;
   --ceu: #3d4b89;
   --ceu-claro: #595995;
-  --agua: #383f6c;
   /* estrela */
   --estrela: #f2c94c;
   --estrela-luz: #f7eec6;
@@ -33,31 +33,23 @@
   --linha: #a9835c;
   /* Luna */
   --luna: #d16b20;
+  --luna-clara: #f0a46a;
   /* vinhetas */
-  --feto: #34447a;
-  --feto-fundo: #2a3666;
+  --feto: #3a4a80;
+  --feto-fundo: #2c3868;
   --onda: #5b6aa8;
   --onda-fina: #48558f;
 
-  /* tipos */
   --serifa: "Fraunces", "Iowan Old Style", "Palatino", Georgia, serif;
   --suave: "SOFT" 100, "WONK" 0;
-  --legenda: clamp(0.9rem, 0.86rem + 0.2vw, 1rem);
-
-  /* traço */
-  --traco-lettering: currentColor;
-  --traco-costura: 2.4px;
+  --legenda: 0.95rem;
   --gutter: 16px;
-  --margem-larga: clamp(16px, 7vw, 120px);
-  --raio: 3px;
-  color-scheme: light;
+  --raio: 4px;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-@media (prefers-reduced-motion: no-preference) {
-  html { scroll-behavior: smooth; }
-}
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; background: var(--noite); }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 body {
   margin: 0;
   background: var(--papel);
@@ -67,324 +59,320 @@ body {
   font-size: 1.0625rem;
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
 }
 img, video, svg { display: block; max-width: 100%; }
 picture { display: contents; }
 figure { margin: 0; }
-h1, h2, p { margin: 0; }
+h1, h2, h3, p { margin: 0; }
+a { color: inherit; }
+button { font: inherit; }
 
 .sr-only {
   position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
+:focus-visible { outline: 3px solid var(--estrela); outline-offset: 3px; border-radius: 4px; }
+.retrato :focus-visible, .fecho :focus-visible { outline-color: var(--luna); }
 
-:focus-visible {
-  outline: 3px solid var(--estrela);
-  outline-offset: 3px;
-  border-radius: 4px;
-}
-.retrato :focus-visible, .album :focus-visible, .fecho :focus-visible { outline-color: var(--luna); }
-
-/* ---------- 1. O ribeiro ---------- */
-
-.ribeiro {
-  position: relative;
-  background: var(--noite);
-  color: var(--papel);
-  padding-top: env(safe-area-inset-top);
-  overflow: hidden;
-}
-
-.ribeiro__grelha {
-  display: grid;
-  grid-template-areas: "cena" "margem";
-}
-
-.cena {
-  grid-area: cena;
-  position: relative;
-  background: var(--noite-funda);
-}
-.cena img, .cena video { width: 100%; height: auto; }
-.cena video {
-  position: absolute; inset: 0; height: 100%;
-  object-fit: contain; background: #000;
-}
-.cena.a-ver { aspect-ratio: 16 / 9; }
-.cena.a-ver img { opacity: 0; }
-
-.margem {
-  grid-area: margem;
-  position: relative;
-  padding: 22px var(--gutter) 8px;
-  min-height: 228px;
-}
-
-.titulo {
-  position: relative; z-index: 1;
-  font-weight: 400;
-  line-height: 1;
-  padding-left: 33%;
-}
-.titulo__de {
-  display: block;
-  font-style: italic;
-  font-size: clamp(1.05rem, 0.9rem + 0.7vw, 1.45rem);
-  letter-spacing: 0.01em;
-  color: var(--pelo);
-  margin-bottom: 0.1em;
-}
-.lettering { display: block; color: var(--papel); }
-.lettering__svg { width: clamp(150px, 46vw, 300px); height: auto; overflow: visible; }
 .lettering__svg .acento { stroke: var(--estrela); }
 
-.acoes {
-  position: relative; z-index: 1;
-  display: flex; flex-wrap: wrap; gap: 8px 22px; align-items: center;
-  margin-top: 18px;
-  padding-left: 33%;
-}
-.folhear, .ver {
-  display: inline-flex; align-items: center; gap: 8px;
-  min-height: 44px;
-  padding: 6px 2px;
+/* ---------- cabeçalho fino ---------- */
+
+.topo {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+  padding: calc(4px + env(safe-area-inset-top)) var(--gutter) 4px;
+  background: var(--noite);
   color: var(--papel);
+}
+.topo a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; }
+.topo__marca .lettering__svg { width: 64px; height: auto; }
+.topo__album { gap: 7px; font-size: 1rem; letter-spacing: 0.02em; padding-inline: 4px; }
+.estrelinha { width: 15px; height: 15px; fill: var(--estrela); flex: none; }
+
+/* ---------- 1. abertura ---------- */
+
+.abertura {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "texto" "ribeiro" "acoes" "detalhes";
+  background: linear-gradient(to bottom, var(--noite) 0, var(--violeta) 70%, var(--noite) 100%);
+  color: var(--papel);
+  padding: 6px 0 20px;
+  overflow: hidden;
+}
+.abertura__texto { grid-area: texto; padding: 0 var(--gutter) 14px; position: relative; z-index: 1; }
+.titulo { font-weight: 400; line-height: 1; display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+.titulo__de {
+  font-style: italic; font-size: 1.15rem; color: var(--pelo);
+  padding-bottom: 0.55em;
+}
+.lettering { display: block; color: var(--papel); }
+.titulo .lettering__svg { width: clamp(132px, 40vw, 190px); height: auto; overflow: visible; }
+.abertura__frase {
+  margin-top: 10px;
+  font-size: 1.06rem; line-height: 1.4;
+  max-width: 34ch;
+  color: var(--estrela-luz);
+}
+
+.abertura__ribeiro { grid-area: ribeiro; position: relative; z-index: 1; }
+.abertura__ribeiro img { width: 100%; height: auto; }
+.abre { display: block; position: relative; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+.abre__selo, .peca__selo {
+  position: absolute; right: 10px; bottom: 10px;
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px 4px 7px;
+  border-radius: 999px;
+  background: rgba(21, 25, 52, 0.78);
+  color: var(--papel);
+  font-size: 0.85rem; font-variant-numeric: tabular-nums;
+}
+.abre__selo svg, .peca__selo svg { width: 16px; height: 16px; fill: var(--estrela); }
+.abre__selo--peq { right: 6px; bottom: 6px; padding: 2px 8px 2px 5px; font-size: 0.78rem; }
+
+.abertura__acoes { grid-area: acoes; padding: 14px var(--gutter) 0; position: relative; z-index: 1; }
+.acoes { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
+.acao {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 10px 20px;
+  border-radius: 999px;
   text-decoration: none;
-  font-size: 1.05rem;
-  letter-spacing: 0.02em;
+  font-size: 1.04rem; letter-spacing: 0.01em;
   touch-action: manipulation;
 }
-.folhear {
-  border-bottom: 1px solid color-mix(in srgb, var(--estrela) 70%, transparent);
-  padding-bottom: 4px; min-height: 44px;
+.acao svg { width: 18px; height: 18px; fill: currentColor; }
+.acao--principal { background: var(--estrela); color: var(--noite); font-weight: 560; }
+.acao--album { padding-inline: 6px; color: var(--papel); text-decoration: underline; text-decoration-color: var(--luna-clara); text-underline-offset: 6px; text-decoration-thickness: 1.5px; }
+.contagem { margin-top: 12px; font-size: 0.92rem; color: var(--pelo); }
+.contagem a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; padding-inline: 2px; text-decoration: none; color: var(--estrela-luz); }
+
+.abertura__detalhes {
+  grid-area: detalhes;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  padding: 18px var(--gutter) 0;
+  position: relative; z-index: 1;
 }
-.folhear::after {
-  content: ""; width: 0.55em; height: 0.55em;
-  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
-  transform: translateY(-0.15em) rotate(45deg);
-  margin-left: 4px;
-}
-.ver { color: var(--estrela-luz); font-style: italic; font-size: 0.98rem; }
-.ver__estrela { width: 15px; height: 15px; fill: var(--estrela); flex: none; }
-.cena.a-ver ~ .margem .ver__estrela { fill: var(--papel); }
+.detalhe img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--raio); }
+.detalhe--aceno img { object-position: 50% 30%; }
+.detalhe--aceno .abre { transform: rotate(-1.6deg); }
+.detalhe--luna .abre { transform: rotate(1.4deg); margin-top: 14px; }
+.detalhe figcaption { margin-top: 8px; font-size: var(--legenda); font-style: italic; color: var(--pelo); }
 
 .vinheta-fetos {
-  position: absolute; z-index: 0;
-  left: max(-14px, calc(var(--gutter) - 26px));
-  bottom: 0;
-  width: auto; height: min(100%, 230px);
-  pointer-events: none;
+  /* telemóvel: por baixo da cena, à direita, a continuar os fetos da margem */
+  grid-area: acoes; justify-self: end; align-self: start;
+  position: relative; z-index: 0; pointer-events: none;
+  width: auto; height: 150px; margin: -6px -18px 0 0;
+  transform: scaleX(-1);
 }
 
-.vinheta-ondas {
-  width: 100%; height: auto;
-  margin-top: 2px;
-}
-.vinheta-ondas .onda { fill: var(--onda); }
-.vinheta-ondas .onda-fina { fill: var(--onda-fina); }
-.vinheta-ondas .reflexo { fill: var(--estrela); opacity: 0.75; }
-.vinheta-ondas .onda-brilho {
-  fill: none; stroke: var(--estrela-luz); stroke-width: 4; stroke-linecap: round;
-  stroke-dasharray: 9 120; stroke-dashoffset: 9; opacity: 0;
+/* ---------- linha de água ---------- */
+
+.passagem { background: linear-gradient(to bottom, var(--noite) 0, var(--noite) 100%); line-height: 0; }
+.vinheta-agua { width: 100%; height: 72px; }
+.vinheta-agua .agua-marca { fill: var(--onda-fina); opacity: 0.8; }
+.agua-brilho {
+  fill: none; stroke: var(--estrela-luz); stroke-width: 3; stroke-linecap: round;
+  stroke-dasharray: 7 120; stroke-dashoffset: 7; opacity: 0;
   filter: drop-shadow(0 0 3px var(--estrela));
+  vector-effect: non-scaling-stroke;
 }
-.vinheta-ondas.brilha .onda-brilho { animation: brilho 900ms cubic-bezier(.45,.05,.3,1) forwards; }
+.vinheta-agua.brilha .agua-brilho { animation: brilho 950ms cubic-bezier(.45,.05,.3,1) forwards; }
 @keyframes brilho {
-  0%   { stroke-dashoffset: 9;   opacity: 0; }
-  12%  { opacity: 1; }
-  80%  { opacity: 1; }
-  100% { stroke-dashoffset: -101; opacity: 0; }
+  0% { stroke-dashoffset: 7; opacity: 0; }
+  10% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { stroke-dashoffset: -100; opacity: 0; }
 }
 
-/* iPad vertical e ecrãs médios em pé: a margem por baixo da cena recebe título e fetos */
-@media (min-width: 700px) {
-  .margem { padding: clamp(28px, 4vh, 56px) var(--margem-larga) 6px; min-height: 300px; }
-  .titulo, .acoes { padding-left: 34%; }
-  .lettering__svg { width: clamp(240px, 36vw, 360px); }
-  .vinheta-fetos { left: calc(var(--margem-larga) - 40px); height: min(100%, 320px); }
+/* ---------- 2. álbum ---------- */
+
+.album { background: var(--noite); color: var(--papel); padding: 6px var(--gutter) 44px; outline: none; }
+.album__cabeca { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; }
+.album__titulo { font-weight: 400; font-style: italic; font-size: 1.6rem; }
+.filtros { display: flex; flex-wrap: wrap; gap: 2px 4px; margin-inline: -8px; }
+.filtro {
+  min-height: 44px; min-width: 44px; padding: 6px 10px;
+  border: 0; background: none; color: var(--pelo); cursor: pointer;
+  border-bottom: 2px solid transparent;
+  font-size: 0.98rem;
+}
+.filtro[aria-pressed="true"] { color: var(--papel); border-bottom-color: var(--luna); }
+.album__estado { font-size: 0.9rem; color: var(--pelo); margin: 6px 0 14px; min-height: 1.3em; }
+
+.grelha { display: grid; grid-template-columns: minmax(0, 1fr); gap: 34px 22px; }
+.grupo { min-width: 0; }
+.grupo[hidden] { display: none; }
+.peca {
+  display: block; position: relative; border-radius: var(--raio); overflow: hidden;
+  background: var(--noite-funda);
+  -webkit-tap-highlight-color: transparent;
+}
+.peca img { width: 100%; height: auto; }
+.grupo--filme .peca img { aspect-ratio: 16 / 9; object-fit: cover; }
+.grupo--imagem .peca img { max-height: 80vh; object-fit: contain; background: var(--noite-funda); }
+.peca--som {
+  display: flex; flex-direction: column; justify-content: center; align-items: stretch;
+  min-height: 150px; padding: 20px 18px 46px;
+  background: linear-gradient(135deg, var(--violeta), var(--noite-funda));
+  color: var(--estrela);
+}
+.peca__onda { width: 100%; height: 60px; }
+.grupo__texto { margin-top: 10px; }
+.grupo__titulo { font-size: 1.12rem; font-weight: 500; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.grupo__n { font-size: 0.85rem; font-weight: 400; color: var(--pelo); font-style: italic; }
+.grupo__legenda { margin-top: 3px; font-size: var(--legenda); color: var(--estrela-luz); opacity: 0.92; max-width: 46ch; }
+.variantes { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(120px, 45%), 1fr)); gap: 10px; }
+.variante { display: block; position: relative; border-radius: var(--raio); overflow: hidden; min-height: 44px; }
+.variante img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+.variante__n {
+  position: absolute; left: 5px; top: 5px; min-width: 24px; height: 24px; padding: 0 6px;
+  display: grid; place-items: center; border-radius: 999px;
+  background: rgba(21, 25, 52, 0.82); color: var(--papel); font-size: 0.8rem;
+}
+.album__mais { text-align: center; margin-top: 30px; }
+.mais {
+  min-height: 48px; padding: 10px 22px; border-radius: 999px; cursor: pointer;
+  background: none; color: var(--papel); border: 1.5px solid var(--luna-clara);
 }
 
-/* iPad horizontal e computador: a largura é uma dupla página.
-   A margem azul-noite à esquerda guarda o título; a cena encosta à direita. */
-@media (min-width: 900px) and (orientation: landscape) {
-  .ribeiro { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; }
-  .ribeiro__grelha {
-    grid-template-areas: "margem cena";
-    grid-template-columns: minmax(230px, 1fr) auto;
-    align-items: stretch;
-    padding: clamp(18px, 4vh, 48px) clamp(16px, 2.6vw, 44px) 0 0;
-  }
-  .cena { width: min(76vw, calc((100svh - clamp(18px, 4vh, 48px) - 7.5vw - 24px) * 16 / 9)); }
-  .margem {
-    display: flex; flex-direction: column; justify-content: flex-start;
-    padding: 4px clamp(18px, 2.4vw, 40px) 0 clamp(20px, 3vw, 52px);
-    min-height: 0;
-  }
-  .titulo, .acoes { padding-left: 0; }
-  .titulo__de { font-size: clamp(1.1rem, 0.6rem + 0.9vw, 1.6rem); }
-  .lettering__svg { width: 100%; max-width: 340px; margin-left: -6px; }
-  .acoes { flex-direction: column; align-items: flex-start; gap: 6px; margin-top: clamp(14px, 3vh, 30px); }
-  .vinheta-fetos { left: -18px; height: min(52%, 330px); }
-  .vinheta-ondas { margin-top: -1px; }
-}
-
-/* ---------- 2. O Tatá ---------- */
+/* ---------- 3. do peluche ao desenho ---------- */
 
 .retrato {
   position: relative;
-  background:
-    linear-gradient(to bottom, var(--noite) 0, var(--ceu) 40px, var(--ceu-claro) 70px, var(--estudio) 130px, var(--pelo) 170px, var(--papel) 240px);
-  padding: 150px var(--gutter) clamp(56px, 10vw, 120px);
-  outline: none;
+  background: linear-gradient(to bottom, var(--noite) 0, var(--ceu) 18px, var(--estudio) 52px, var(--pelo) 74px, var(--papel) 100px);
+  padding: 150px var(--gutter) 56px;
 }
-.retrato__titulo {
-  font-weight: 400; font-style: italic;
-  font-size: clamp(1.4rem, 1.1rem + 1.5vw, 2.2rem);
-  color: var(--tinta);
-  margin: 0 0 clamp(20px, 3vw, 36px) clamp(0px, 4vw, 60px);
-  line-height: 1.1;
-}
-.par {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(12px, 3vw, 48px);
-  align-items: start;
-  max-width: 1180px;
-  margin: 0 auto;
-  padding-bottom: 34px;
-}
+.vinheta-costura { position: absolute; left: 0; right: 0; top: 98px; width: 100%; height: 36px; }
+.retrato__titulo { font-weight: 400; font-style: italic; font-size: 1.5rem; line-height: 1.1; margin-bottom: 18px; color: var(--tinta); }
+.par { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; max-width: 1040px; margin: 0 auto; }
 .par img { width: 100%; height: auto; border-radius: var(--raio); }
 .par__peluche {
-  margin-top: clamp(4px, 1.5vw, 18px);
-  box-shadow: 0 1px 0 var(--papel-sombra), 0 12px 30px -18px rgba(60, 40, 20, 0.45);
+  margin-top: 4px;
+  border: 5px solid #fbf6ee; border-bottom-width: 18px; border-radius: 2px;
+  box-shadow: 0 12px 30px -18px rgba(60, 40, 20, 0.45);
   transform: rotate(-1.4deg);
-  border: clamp(5px, 1vw, 10px) solid #fbf6ee;
-  border-bottom-width: clamp(18px, 3.4vw, 40px);
-  border-radius: 2px;
 }
 .par__peluche img { border-radius: 0; }
-.vinheta-costura {
-  position: absolute; left: -2%; right: -2%; bottom: 0;
-  width: 104%; height: 44px;
-}
-@media (min-width: 700px) {
-  .retrato { padding-top: 190px; padding-inline: var(--margem-larga); }
-  .par { grid-template-columns: 1fr 1fr; max-width: 1040px; }
-}
+.par__desenho img { aspect-ratio: 700 / 730; object-fit: cover; object-position: 50% 40%; }
+.retrato__legenda { margin-top: 14px; font-size: var(--legenda); font-style: italic; color: var(--tinta-suave); max-width: 40ch; }
 
-/* ---------- 3. O álbum ---------- */
+/* ---------- 4. fecho ---------- */
 
-.album { background: var(--papel); padding-bottom: 0; }
-.pagina { padding: clamp(40px, 8vw, 110px) var(--gutter); }
-.peca__botao {
-  display: block; width: 100%;
-  padding: 0; margin: 0; border: 0; background: none; cursor: zoom-in;
-  border-radius: var(--raio);
-  min-height: 44px;
-  touch-action: manipulation;
-}
-.peca img { width: 100%; height: auto; border-radius: var(--raio); }
-.peca figcaption {
-  font-size: var(--legenda);
-  font-style: italic;
-  color: var(--tinta-suave);
-  margin-top: 10px;
-  max-width: 34ch;
-}
-
-.pagina--luna .peca img { aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 30%; }
-.pagina--gestos { display: grid; gap: 40px; }
-.peca--ramo img { aspect-ratio: 4 / 3; object-fit: cover; object-position: 66% 40%; }
-.peca--tronco img { aspect-ratio: 4 / 3; object-fit: cover; object-position: 48% 55%; }
-
-.pagina--colina {
-  background: linear-gradient(to bottom, var(--papel) 0, var(--noite) 120px, var(--noite) 100%);
-  padding: 120px 0 0;
-  color: var(--papel);
-}
-.peca--colina img { border-radius: 0; }
-.peca--colina figcaption { color: var(--pelo); padding: 12px var(--gutter) 0; margin: 0; }
-.pagina--colina .peca__botao:focus-visible { outline-color: var(--estrela); outline-offset: -6px; }
-
-@media (min-width: 700px) {
-  .pagina { padding-inline: var(--margem-larga); }
-  .pagina--luna { display: grid; grid-template-columns: 1fr 44%; padding-right: calc(var(--margem-larga) * 1.6); }
-  .peca--luna { grid-column: 2; }
-  .pagina--luna .peca img { aspect-ratio: auto; }
-  .pagina--gestos { grid-template-columns: 50fr 40fr; gap: clamp(20px, 4vw, 64px); align-items: start; }
-  .peca--tronco { margin-top: clamp(80px, 14vw, 200px); }
-  .peca--ramo img, .peca--tronco img { aspect-ratio: auto; }
-  .pagina--colina { padding: 170px 0 0; }
-  .peca--colina figcaption { padding: 14px var(--margem-larga) 0; text-align: right; max-width: none; }
-}
-
-/* ---------- 4. O fecho ---------- */
-
-.fecho {
-  background: linear-gradient(to bottom, var(--noite) 0, var(--estudio) 220px, var(--papel) 420px);
-  padding: 120px var(--gutter) calc(48px + env(safe-area-inset-bottom));
-  text-align: center;
-}
+.fecho { background: var(--papel); padding: 24px var(--gutter) calc(40px + env(safe-area-inset-bottom)); text-align: center; }
 .fecho__imagem { max-width: 1100px; margin: 0 auto; }
 .fecho__imagem img { width: 100%; height: auto; border-radius: var(--raio); }
-.assinatura {
-  margin-top: clamp(28px, 5vw, 48px);
-  font-size: 0.92rem;
-  letter-spacing: 0.04em;
-  color: var(--tinta-suave);
-}
+.assinatura { display: flex; justify-content: center; margin-top: 26px; color: var(--tinta); }
+.assinatura .lettering__svg { width: 92px; height: auto; }
 .voltar {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-height: 44px; padding: 8px 6px;
-  margin-top: 6px;
-  font-size: 0.92rem; font-style: italic;
-  color: var(--tinta);
-  text-decoration: underline;
-  text-decoration-color: var(--linha);
-  text-underline-offset: 4px;
-}
-@media (min-width: 700px) {
-  .fecho { padding: 160px var(--margem-larga) 64px; }
+  display: inline-flex; align-items: center; min-height: 44px; padding: 8px 6px; margin-top: 4px;
+  font-size: 0.95rem; font-style: italic; color: var(--tinta);
+  text-decoration-color: var(--linha); text-underline-offset: 4px;
 }
 
-/* ---------- Ampliar ---------- */
+/* ---------- leitor ---------- */
 
-.ampliar {
+.leitor {
   width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh;
   margin: 0; padding: 0; border: 0;
-  background: rgba(14, 16, 32, 0.96);
-  color: var(--papel);
+  background: #0e1020; color: var(--papel);
   overscroll-behavior: contain;
 }
-.ampliar[open] { display: grid; grid-template-rows: 1fr auto; }
-.ampliar::backdrop { background: rgba(14, 16, 32, 0.9); }
-.ampliar__figura {
-  display: flex; flex-direction: column; justify-content: center; align-items: center;
-  min-height: 0;
-  padding: calc(64px + env(safe-area-inset-top)) var(--gutter) 8px;
+.leitor[open] { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
+.leitor::backdrop { background: rgba(14, 16, 32, 0.92); }
+.leitor__topo {
+  display: flex; align-items: center; gap: 10px;
+  padding: calc(8px + env(safe-area-inset-top)) 10px 6px 16px;
 }
-.ampliar__figura img {
-  max-width: 100%; max-height: calc(100dvh - 170px); width: auto; height: auto;
-  object-fit: contain; min-height: 0;
-}
-.ampliar__figura figcaption {
-  font-style: italic; font-size: var(--legenda); color: var(--pelo);
-  padding-top: 10px; text-align: center;
-}
-.ampliar__fechar {
-  position: absolute;
-  top: calc(12px + env(safe-area-inset-top)); right: 12px;
+.leitor__contador { margin-right: auto; font-size: 0.9rem; color: var(--pelo); font-variant-numeric: tabular-nums; }
+.leitor__btn, .leitor__som {
   min-width: 44px; min-height: 44px; padding: 8px 16px;
-  font: inherit; font-size: 1rem;
-  color: var(--papel); background: transparent;
-  border: 1px solid color-mix(in srgb, var(--papel) 50%, transparent);
-  border-radius: 999px;
-  cursor: pointer;
+  color: var(--papel); background: transparent; cursor: pointer;
+  border: 1px solid rgba(244, 235, 221, 0.45); border-radius: 999px;
 }
-.ampliar__fechar:focus-visible { outline-color: var(--estrela); }
-html.ampliado { overflow: hidden; }
+.leitor__som[aria-pressed="true"] { border-color: var(--estrela); color: var(--estrela); }
+.leitor__palco { display: grid; place-items: center; min-height: 0; padding: 4px 8px; }
+.leitor__palco img, .leitor__palco video { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; min-height: 0; }
+.leitor__palco video { width: 100%; background: #000; }
+.leitor__palco .som { width: min(560px, 100%); padding: 0 8px; }
+.leitor__palco audio { width: 100%; }
+.leitor__palco .transcricao { margin-top: 14px; font-size: 1rem; line-height: 1.5; color: var(--estrela-luz); }
+.leitor__palco .transcricao small { display: block; margin-top: 8px; font-size: 0.82rem; color: var(--pelo); }
+.leitor__rodape {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px;
+  padding: 8px 10px calc(10px + env(safe-area-inset-bottom));
+}
+.leitor__nav { padding: 8px; width: 48px; height: 48px; display: grid; place-items: center; }
+.leitor__nav:disabled { opacity: 0.3; cursor: default; }
+.leitor__nav svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.leitor__texto { text-align: center; min-width: 0; }
+.leitor__titulo { font-size: 1.02rem; font-weight: 500; }
+.leitor__legenda { font-size: 0.9rem; font-style: italic; color: var(--pelo); }
+html.leitor-aberto { overflow: hidden; }
+
+/* ---------- 320 px: deixa crescer ---------- */
+@media (max-width: 359px) {
+  :root { --gutter: 12px; }
+  .acoes { flex-direction: column; align-items: stretch; }
+  .acao--album { justify-content: flex-start; }
+}
+
+/* ---------- tablet vertical e maior: as imagens ganham largura ---------- */
+@media (min-width: 700px) {
+  :root { --gutter: clamp(20px, 5vw, 64px); }
+  .topo__marca .lettering__svg { width: 78px; }
+  .titulo .lettering__svg { width: 230px; }
+  .abertura__frase { font-size: 1.2rem; }
+  .abertura__detalhes { gap: 28px; padding-top: 26px; }
+  .grelha { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grupo--imagem .peca img { max-height: 60vh; }
+  .retrato { padding-top: 180px; }
+  .vinheta-costura { top: 110px; height: 48px; }
+  .retrato__titulo { font-size: 2rem; margin-left: 4vw; }
+  .par { gap: clamp(16px, 3vw, 48px); }
+  .par__peluche { border-width: 9px; border-bottom-width: 34px; }
+  .vinheta-agua { height: 110px; }
+}
+
+/* ---------- dupla página: telemóvel deitado, iPad horizontal e computador ---------- */
+@media (min-width: 760px) and (orientation: landscape) {
+  .abertura {
+    grid-template-columns: minmax(0, 40fr) minmax(0, 60fr);
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas: "texto ribeiro" "acoes ribeiro" "fetos detalhes";
+    column-gap: clamp(20px, 3vw, 48px);
+    padding: clamp(8px, 2vh, 24px) var(--gutter) 24px var(--gutter);
+    align-items: start;
+  }
+  .abertura__texto, .abertura__acoes { padding-inline: 0; }
+  .abertura__texto { align-self: end; }
+  .abertura__ribeiro .abre { border-radius: var(--raio); overflow: hidden; }
+  .titulo { flex-direction: column; align-items: flex-start; gap: 0; }
+  .titulo__de { padding-bottom: 2px; font-size: clamp(1.1rem, 0.6rem + 1vw, 1.6rem); }
+  .titulo .lettering__svg { width: clamp(170px, 24vw, 340px); margin-left: -4px; }
+  .abertura__frase { font-size: clamp(1rem, 0.7rem + 0.7vw, 1.35rem); }
+  .abertura__detalhes {
+    grid-template-columns: 52fr 44fr; gap: clamp(14px, 2vw, 30px);
+    padding: clamp(12px, 2.5vh, 26px) clamp(10px, 4vw, 70px) 0 clamp(0px, 3vw, 50px);
+  }
+  .vinheta-fetos { grid-area: fetos; justify-self: start; align-self: end; margin: 0 0 -24px -40px; height: min(100%, 300px); transform: none; }
+  .grelha { grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); }
+}
+@media (min-width: 760px) and (orientation: landscape) and (max-height: 500px) {
+  /* telemóvel deitado: a cena ao lado do título, detalhes logo abaixo */
+  .titulo .lettering__svg { width: 150px; }
+  .abertura__frase { font-size: 0.98rem; }
+  .acao { min-height: 44px; padding: 8px 16px; }
+  .contagem { margin-top: 2px; }
+}
+@media (min-width: 1100px) {
+  .grelha { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .album { padding-inline: var(--gutter); }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
