@@ -141,6 +141,8 @@
 
 </main>
 
+<canvas class="corrente" id="corrente" aria-hidden="true" data-estado="parado"></canvas>
+
 <dialog class="leitor" id="leitor" aria-labelledby="leitor-titulo">
   <div class="leitor__topo">
     <p class="leitor__contador" id="leitor-contador"></p>
@@ -165,5 +167,6 @@
 </svg>
 <script type="application/json" id="acervo-dados">{{ACERVO_JSON}}</script>
 <script src="app.js" defer></script>
+<script src="corrente.js" defer></script>
 </body>
 </html>

@@ -266,6 +266,16 @@ button { font: inherit; }
   text-decoration-color: var(--linha); text-underline-offset: 4px;
 }
 
+/* ---------- corrente de luz (fundo animado) ----------
+   O canvas vem depois do <main>: fica acima das cores de fundo das secções e abaixo de
+   imagens, texto e controlos, que sobem para z-index 1. */
+.corrente {
+  position: fixed; inset: 0; width: 100%; height: 100vh; height: 100lvh;
+  z-index: 0; pointer-events: none;
+}
+.topo { position: relative; z-index: 2; }
+.album > *, .retrato > :not(.vinheta-costura), .fecho > * { position: relative; z-index: 1; }
+
 /* ---------- leitor ---------- */
 
 .leitor {

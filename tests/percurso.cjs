@@ -178,6 +178,67 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
     await ctx.close();
   }
 
+  // Corrente de luz (fundo animado)
+  for (const [w, h, nome] of [[390, 844, 'telemóvel'], [820, 1180, 'iPad vertical'], [1180, 820, 'iPad horizontal'], [1440, 900, 'computador']]) {
+    console.log(`\ncorrente de luz — ${nome} ${w}×${h}`);
+    const toque = w < 1300;
+    const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: toque, isMobile: toque && w < 900 });
+    const p = await ctx.newPage();
+    const erros = []; p.on('pageerror', (e) => erros.push(String(e)));
+    await p.goto(url); await p.waitForTimeout(700);
+    const pixels = () => p.evaluate(() => {
+      const c = document.getElementById('corrente'), d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+      let n = 0, soma = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 40) { n++; soma = (soma + i * d[i]) % 1e9; }
+      return { n, soma };
+    });
+    const cv = await p.evaluate(() => { const c = document.getElementById('corrente'), s = getComputedStyle(c);
+      return { aria: c.getAttribute('aria-hidden'), pe: s.pointerEvents, pos: s.position, z: s.zIndex, planos: c.dataset.planos,
+               zImg: getComputedStyle(document.querySelector('.abertura__ribeiro')).zIndex, estado: c.dataset.estado }; });
+    ok(cv.aria === 'true' && cv.pe === 'none' && cv.pos === 'fixed', 'canvas decorativo: aria-hidden, sem eventos de ponteiro, fixo');
+    ok(+cv.z === 0 && +cv.zImg === 1, 'acima das cores de fundo, abaixo de imagens, texto e controlos');
+    const [fundo, meio, frente] = cv.planos.split(',').map(Number);
+    ok(meio > fundo && fundo > frente && frente > 0, `três planos: fundo ${fundo}, intermédio ${meio}, frente ${frente}`);
+    const a = await pixels();
+    ok(a.n > (w < 700 ? 600 : 1500), `onda visível numa captura estática (${a.n} píxeis acesos)`);
+    // a onda não cobre a cena: no centro da imagem o elemento visível é a imagem
+    ok(await p.evaluate(() => { const r = document.querySelector('.abertura__ribeiro img').getBoundingClientRect();
+      return document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2).tagName === 'IMG'; }), 'a ilustração fica por cima das partículas');
+    await p.waitForTimeout(500);
+    const b2 = await pixels();
+    ok(cv.estado === 'a-animar' && b2.soma !== a.soma, 'em movimento');
+    // «Ver a descoberta»: o filme abre de imediato e o fundo deixa de animar
+    const t0 = Date.now();
+    await p.click('.acao--principal');
+    await p.waitForSelector('#leitor[open] video');
+    const tAbrir = Date.now() - t0;
+    ok(tAbrir < 600, `filme aberto em ${tAbrir} ms`);
+    await p.waitForTimeout(150);
+    const e1 = await p.getAttribute('#corrente', 'data-estado'), c1 = await pixels();
+    await p.waitForTimeout(500);
+    const c2 = await pixels();
+    ok(e1 === 'parado' && c1.soma === c2.soma, 'fundo suspenso com o filme aberto');
+    await p.keyboard.press('Escape'); await p.waitForTimeout(200);
+    ok(await p.getAttribute('#corrente', 'data-estado') === 'a-animar', 'retoma ao fechar o leitor');
+    // separador oculto: suspende e retoma
+    await p.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => true }); document.dispatchEvent(new Event('visibilitychange')); });
+    const eh = await p.getAttribute('#corrente', 'data-estado');
+    await p.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => false }); document.dispatchEvent(new Event('visibilitychange')); });
+    await p.waitForTimeout(100);
+    ok(eh === 'parado' && await p.getAttribute('#corrente', 'data-estado') === 'a-animar', 'suspende com o separador oculto e retoma');
+    ok(erros.length === 0, 'sem erros ' + erros.join(';'));
+    await ctx.close();
+  }
+  {
+    console.log('\ncorrente de luz — movimento reduzido');
+    const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce', isMobile: true, hasTouch: true });
+    const p = await ctx.newPage(); await p.goto(url); await p.waitForTimeout(500);
+    const snap = () => p.evaluate(() => { const c = document.getElementById('corrente'), d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+      let n = 0, soma = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 40) { n++; soma = (soma + i * d[i]) % 1e9; } return { n, soma }; });
+    const s1 = await snap(); await p.waitForTimeout(600); const s2 = await snap();
+    ok(await p.getAttribute('#corrente', 'data-estado') === 'estatico' && s1.n > 600 && s1.soma === s2.soma, `composição estática (${s1.n} píxeis acesos, sem movimento)`);
+    await ctx.close();
+  }
+
   // Ligação móvel simulada
   console.log('\nligação móvel simulada (Fast 3G, 390×844)');
   {
