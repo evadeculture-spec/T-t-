@@ -286,6 +286,17 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
     await ir(await topoDe('#tata') - h * 0.25); zonas['zona creme'] = await visiveis();
     await ir(await topoDe('.fecho__imagem') - h * 0.2); zonas['fecho'] = await visiveis();
     for (const [z, n] of Object.entries(zonas)) ok(n > (w < 700 ? 60 : 120), `corrente presente: ${z} (${n} grãos visíveis)`);
+    // barra do Safari (só a altura muda): nada é recomposto e os grãos não saltam
+    if (toque) {
+      await ir(await topoDe('#grupo-ramo') - h * 0.3); await p.waitForTimeout(300);
+      const c0 = await p.getAttribute('#corrente', 'data-comprimento');
+      t0 = Date.now(); const b0 = await amostra();
+      await p.setViewportSize({ width: w, height: h - 80 }); await p.waitForTimeout(250);
+      await p.setViewportSize({ width: w, height: h }); await p.waitForTimeout(250);
+      const b1 = await amostra(); dt = (Date.now() - t0) / 1000;
+      const db = desvio(b0, b1);
+      ok(c0 === await p.getAttribute('#corrente', 'data-comprimento') && db.p95 < 12 + 45 * dt, `barra do Safari: percurso intacto, grãos sem salto (p95 ${db.p95.toFixed(1)} px em ${dt.toFixed(2)} s)`);
+    }
     // rotação: transição gradual, sem teletransporte
     if (toque) {
       await ir(await topoDe('#grupo-ramo') - h * 0.3); await p.waitForTimeout(300);

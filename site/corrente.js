@@ -159,13 +159,18 @@
   let W = 0, H = 0, dpr = 1, cam = null, antigo = null, trans = 1, textos = [], cremeIni = Infinity, cremeFim = Infinity;
   let parts = [], qualidade = 3; // 3: tudo · 2: menos halos e grãos desfocados · 1: sem primeiro plano, fundo mais ralo · 0: desenha a 30 fps
 
+  const OPACOS = ['.abertura__ribeiro img', '.detalhe img', '.grupo:not([hidden]) .peca img', '.grupo:not([hidden]) .variante img', '.par img', '.fecho__imagem img'];
+  let opacos = [];
   function medirTextos() {
     textos = TEXTO.flatMap((s) => [...document.querySelectorAll(s)].map(pagina)).filter(Boolean);
+    // imagens opacas: um grão por baixo delas não se vê, por isso nem se desenha (encolhidas 6 px pelas inclinações)
+    opacos = OPACOS.flatMap((s) => [...document.querySelectorAll(s)].map(pagina)).filter(Boolean)
+      .map((r) => ({ l: r.l + 6, r: r.r - 6, t: r.t + 6, b: r.b - 6 })).filter((r) => r.r > r.l && r.b > r.t);
     const rt = pagina(retrato);
     if (rt) { cremeIni = rt.t + 10; cremeFim = rt.t + 110; }
   }
 
-  const densidade = () => (innerWidth < 700 ? 0.44 : innerWidth < 1100 ? 0.55 : 0.6);
+  const densidade = () => (innerWidth < 700 ? 0.38 : innerWidth < 1100 ? 0.55 : 0.6);
   const alvo = () => Math.round(Math.min(11000, Math.max(900, cam.L * densidade())));
   function nova(d, nasce) {
     const q = rnd();
@@ -191,11 +196,23 @@
     for (let i = 0; i < n; i++) parts.push(nova(rnd(0, cam.L), 1));
     anotar();
   }
-  function medir(manter) {
-    W = innerWidth; H = innerHeight;
-    dpr = Math.min(devicePixelRatio || 1, 2);
+  // superfície: no iPhone a barra do Safari muda a altura durante o scroll; a superfície fica com a maior
+  // altura já vista para esta largura, por isso essas mudanças não obrigam a recompor nem a realocar
+  let larguraComposta = 0, altoMax = 0;
+  function superficie() {
+    const w = innerWidth, h = Math.max(innerHeight, document.documentElement.clientHeight);
+    if (w !== W) altoMax = 0;
+    altoMax = Math.max(altoMax, h);
+    const ndpr = Math.min(devicePixelRatio || 1, 2);
+    if (w === W && altoMax === H && ndpr === dpr && canvas.width) return false;
+    W = w; H = altoMax; dpr = ndpr;
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
     canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    return true;
+  }
+  function medir(manter) {
+    superficie();
+    larguraComposta = W;
     const novo = compor();
     medirTextos();
     // cada partícula está ancorada pela distância (px) desde o início do percurso: o que fica acima de
@@ -246,6 +263,7 @@
     if (!cam) return;
     const sy = scrollY, topo = sy - 60, fundo = sy + H + 60;
     const tv = textos.filter((r) => r.b > topo && r.t < fundo), spr = sprites4();
+    const ov = opacos.filter((r) => r.b > topo && r.t < fundo);
     const k = trans < 1 ? trans * trans * (3 - 2 * trans) : 1;
     let desenhados = 0;
     for (let n = 0; n < parts.length; n++) {
@@ -255,6 +273,9 @@
       posicao(cam, p, t, A);
       if (k < 1) { posicao(antigo, p, t, B, p.da); A.x = B.x + (A.x - B.x) * k; A.y = B.y + (A.y - B.y) * k; }
       if (A.y < topo || A.y > fundo || A.x < -40 || A.x > W + 40) continue;
+      let tapado = false;
+      for (const r of ov) if (A.x > r.l && A.x < r.r && A.y > r.t && A.y < r.b) { tapado = true; break; }
+      if (tapado) continue;
       // profundidade efetiva: onde a corrente se aproxima os grãos vêm para a frente
       const z = Math.min(1, Math.max(0, p.z + (A.zona - 0.5) * 0.22));
       const desf = Math.abs(z - 0.5) * 2;               // 0 no plano focal
@@ -333,7 +354,10 @@
   addEventListener('scroll', () => { if (!raf) desenhar(relogio); }, { passive: true });
   let tmr = 0;
   const remedir = () => { clearTimeout(tmr); tmr = setTimeout(() => { medir(true); if (!raf) { trans = 1; desenhar(relogio); } }, 90); };
-  addEventListener('resize', remedir);
+  addEventListener('resize', () => {
+    if (innerWidth === larguraComposta) { if (superficie() && !raf) desenhar(relogio); return; } // barra do Safari
+    remedir();
+  });
   addEventListener('orientationchange', remedir);
   if ('ResizeObserver' in window) new ResizeObserver(remedir).observe(document.body);
   document.fonts && document.fonts.ready.then(remedir);
