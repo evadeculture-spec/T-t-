@@ -23,6 +23,15 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
     await p.goto(url, { waitUntil: 'load' });
 
     const caixa = (sel) => p.locator(sel).first().boundingBox();
+    ok(await p.title() === 'O universo do Tátá', 'título «O universo do Tátá»');
+    const grafia = await p.evaluate(() => {
+      const meta = [...document.querySelectorAll('meta[content], [aria-label], [alt], [title]')].map((e) => [e.content, e.getAttribute('aria-label'), e.alt, e.title].join(' ')).join(' ');
+      const tudo = (document.body.innerText + ' ' + document.body.textContent + ' ' + meta + ' ' + document.getElementById('acervo-dados').textContent).normalize('NFC');
+      return { antiga: /Tatá|TATÁ/.test(tudo), nova: /Tátá/.test(tudo) };
+    });
+    ok(!grafia.antiga && grafia.nova, 'só a grafia «Tátá» no texto, metadados e catálogo');
+    const acentos = await p.evaluate(() => ['.topo__marca', '.titulo .lettering', '.assinatura'].map((s) => [...document.querySelector(s).querySelectorAll('.acento')].filter((a) => { const r = a.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(a).stroke !== 'none'; }).length));
+    ok(acentos.every((n) => n === 4), `dois acentos (traço e ponto) no lettering do cabeçalho, abertura e rodapé (${acentos})`);
     const scrollW = await p.evaluate(() => document.documentElement.scrollWidth);
     ok(scrollW <= w, `sem scroll horizontal (${scrollW})`);
     if (w >= 390) {
@@ -127,7 +136,7 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
       }));
       if (res.erro) maus.push(t);
       vistos.add(t);
-      if (t === 'A história, com a voz do Tatá') {
+      if (t === 'A história, com a voz do Tátá') {
         const cues = await p.evaluate(() => new Promise((ok) => { const v = document.querySelector('#leitor video'); const tr = v.textTracks[0]; tr.mode = 'showing'; setTimeout(() => ok(tr.cues ? tr.cues.length : 0), 800); }));
         ok(cues === 6, `legendas da fala carregadas (${cues} deixas)`);
       }
@@ -147,8 +156,8 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
     const filtros = await p.$$eval('.filtro', (bs) => bs.map((x) => x.textContent.trim()));
     ok(filtros.join('|') === 'Tudo|Filmes|Imagens', `filtros: ${filtros.join(', ')}`);
     ok(await p.locator('.contagem').innerText().then((t) => !/som/i.test(t)), `contagem da abertura: ${(await p.locator('.contagem').innerText()).replace(/\s+/g, ' ')}`);
-    ok(await p.evaluate(() => !document.querySelector('.peca--som, [data-tipo="som"], a[href$=".m4a"], #onda-som')), 'sem cartão «A voz do Tatá», onda ou ligação à faixa');
-    ok(await p.evaluate(() => !/A voz do Tatá|Ouvir ·/.test(document.body.innerText)), 'texto «A voz do Tatá» e «Ouvir» ausentes da página');
+    ok(await p.evaluate(() => !document.querySelector('.peca--som, [data-tipo="som"], a[href$=".m4a"], #onda-som')), 'sem cartão «A voz do Tátá», onda ou ligação à faixa');
+    ok(await p.evaluate(() => !/A voz do Tátá|Ouvir ·/.test(document.body.innerText)), 'texto «A voz do Tátá» e «Ouvir» ausentes da página');
     ok(await p.evaluate(() => !JSON.parse(document.getElementById('acervo-dados').textContent).some((x) => x.tipo === 'som' || x.audio)), 'catálogo público sem faixa de som');
     const estado = await p.textContent('#album-estado');
     ok(estado.startsWith(`${TOTAL_PECAS} peças em ${TOTAL_GRUPOS} grupos`), `estado em «Tudo»: ${estado}`);
@@ -161,10 +170,10 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
     let comAudio = 0;
     for (let k = 0; k < total; k++) { titulos.push(await p.textContent('#leitor-titulo')); comAudio += await p.locator('#leitor audio').count(); await p.click('#leitor-seg'); }
     for (let k = 0; k < 3; k++) await p.click('#leitor-ant');
-    ok(total === TOTAL_PECAS && comAudio === 0 && !titulos.includes('A voz do Tatá') && new Set(titulos).size === TOTAL_PECAS, `Anterior/Seguinte em «Tudo»: ${total} peças, nenhuma faixa de som`);
+    ok(total === TOTAL_PECAS && comAudio === 0 && !titulos.includes('A voz do Tátá') && new Set(titulos).size === TOTAL_PECAS, `Anterior/Seguinte em «Tudo»: ${total} peças, nenhuma faixa de som`);
     await p.keyboard.press('Escape');
     // o filme narrado mantém o som, as legendas e o controlo de volume
-    const narrado = p.locator('a[aria-label^="Ver o filme «A história, com a voz do Tatá»"]');
+    const narrado = p.locator('a[aria-label^="Ver o filme «A história, com a voz do Tátá»"]');
     await p.click('.filtro[data-filtro="filme"]');
     while (await p.isVisible('#mais')) await p.click('#mais');
     await narrado.scrollIntoViewIfNeeded(); await narrado.click();

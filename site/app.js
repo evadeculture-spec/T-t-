@@ -1,4 +1,4 @@
-/* O universo do Tatá — interações.
+/* O universo do Tátá — interações.
    Sem JavaScript tudo continua acessível: cada peça é uma ligação para o ficheiro (imagem ou
    filme) e as âncoras levam ao álbum e de volta ao ribeiro. Este script acrescenta os filtros,
    a revelação progressiva, o leitor (anterior, seguinte, fechar) e o brilho na linha de água. */

@@ -2,14 +2,17 @@
   <!-- T: travessão ondulado e haste que se curva para o «a» -->
   <path d="M12 34 C 26 27, 48 25, 63 28 S 84 31, 92 27" stroke-width="8.5"/>
   <path d="M51 30 C 49 52, 46 78, 50 96 C 53 107, 63 108, 70 101" stroke-width="9"/>
-  <!-- a -->
+  <!-- a com acento -->
   <path d="M101 70 C 94 60, 75 61, 72 79 C 69 96, 85 104, 95 93 C 100 87, 101 77, 101 67 C 101 82, 100 97, 111 103" stroke-width="8"/>
   <!-- t -->
   <path d="M127 42 C 125 62, 123 86, 128 97 C 132 106, 141 105, 147 98" stroke-width="8"/>
   <path d="M114 63 C 124 61, 136 60, 148 62" stroke-width="6.5"/>
   <!-- a com acento -->
   <path d="M183 70 C 176 60, 157 61, 154 79 C 151 96, 167 104, 177 93 C 182 87, 183 77, 183 67 C 183 82, 182 97, 194 103 C 202 107, 214 101, 222 92" stroke-width="8"/>
-  <!-- acento agudo: um ponto de costura curto, como a costura do peito do peluche -->
+  <!-- acentos agudos: pontos de costura curtos, como a costura do peito do peluche;
+       o do primeiro «a» repete o do segundo (mesma inclinação, espessura e cor) -->
+  <path class="acento" d="M87 52.5 L 102 34.5" stroke-width="7"/>
+  <path class="acento" d="M89.5 41 L 97 47" stroke-width="3.2"/>
   <path class="acento" d="M167 51 L 182 33" stroke-width="7"/>
   <path class="acento" d="M169.5 39.5 L 177 45.5" stroke-width="3.2"/>
 </svg>

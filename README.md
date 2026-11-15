@@ -1,8 +1,8 @@
-# O universo do Tatá
+# O universo do Tátá
 
-Portfólio ilustrado do Tatá, pensado primeiro para telemóvel: abertura com a cena do ribeiro,
+Portfólio ilustrado do Tátá, pensado primeiro para telemóvel: abertura com a cena do ribeiro,
 álbum com todo o acervo (filmes, imagens e som), «Do peluche ao desenho» e o fecho com a Luna
-encostada ao Tatá. Produção: https://universo-tata.netlify.app/
+encostada ao Tátá. Produção: https://universo-tata.netlify.app/
 
 ## Estrutura
 
@@ -12,7 +12,7 @@ encostada ao Tatá. Produção: https://universo-tata.netlify.app/
 - `src/index.html` — modelo da página; `scripts/build.py` monta `site/index.html` e gera o álbum
   completo em HTML (todas as peças acessíveis mesmo sem JavaScript).
 - `inventario/inventario.json` — inventário de trabalho (não publicado): identificador estável,
-  tipo, grupo, estado de integração e duplicados de cada peça do Higgsfield ligada ao Tatá.
+  tipo, grupo, estado de integração e duplicados de cada peça do Higgsfield ligada ao Tátá.
 - `scripts/importar.py` — importação idempotente a partir do inventário e de uma pasta de
   originais com o identificador como nome (`<id>.mp4|png|wav`). Volta a correr sem refazer o que existe.
 - `scripts/abertura_media.py` — planos da abertura (ribeiro e aproximação da Luna).

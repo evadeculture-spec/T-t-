@@ -1,4 +1,4 @@
-"""Importa o acervo do Tatá a partir do inventário (idempotente).
+"""Importa o acervo do Tátá a partir do inventário (idempotente).
 
 Uso:
   python3 scripts/importar.py <pasta-originais> [--forcar]

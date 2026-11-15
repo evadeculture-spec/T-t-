@@ -1,4 +1,4 @@
-/* O universo do Tatá — corrente de luz (fundo contínuo da apresentação).
+/* O universo do Tátá — corrente de luz (fundo contínuo da apresentação).
    Poeira finíssima suspensa junto ao ribeiro, iluminada pela estrela ao crepúsculo. Uma só corrente
    desce do título até à última imagem: atravessa cada intervalo livre entre linhas de conteúdo,
    desce pelas margens ou pelos intervalos entre colunas e volta a aparecer do outro lado.
