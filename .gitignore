@@ -1,0 +1,7 @@
+# originais de trabalho, capturas de ecrã e testes visuais ficam fora do repositório
+originais/
+capturas/
+node_modules/
+.netlify/
+.env*
+.frame_*

@@ -1,0 +1,21 @@
+# Site estático: a pasta site/ já contém apenas os ficheiros públicos.
+# (as capturas de ecrã completas e os originais de trabalho nunca entram nesta pasta)
+[build]
+  publish = "site"
+  command = ""
+
+[[headers]]
+  for = "/media/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
