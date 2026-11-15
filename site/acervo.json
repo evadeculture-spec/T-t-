@@ -1,8 +1,7 @@
 {
  "contagem": {
   "filme": 19,
-  "imagem": 8,
-  "som": 1
+  "imagem": 8
  },
  "pecas": [
   {
@@ -402,18 +401,6 @@
    "inteira": "media/acervo/cartaz-universo-1600.jpg",
    "alt": "Faixa de cartaz com peluches, livro e objetos do Tatá, ícones de série, filmes e jogos, e o Tatá a sorrir.",
    "miniatura": "media/acervo/cartaz-universo"
-  },
-  {
-   "slug": "voz-do-tata",
-   "tipo": "som",
-   "grupo": "voz",
-   "ordem": 1,
-   "titulo": "A voz do Tatá",
-   "legenda": "O Tatá conta, com a sua voz, como encontrou a estrela.",
-   "grupoTitulo": "A voz do Tatá",
-   "audio": "media/acervo/voz-do-tata.m4a",
-   "duracao": 23.6,
-   "transcricao": "Olha! Uma estrela brilhante! Vou atravessar o tronco para chegar até ela. Consegui! Encontrei a estrela! Vou devolver a estrela para o céu, bem alto!"
   }
  ]
 }

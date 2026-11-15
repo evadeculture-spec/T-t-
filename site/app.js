@@ -1,6 +1,6 @@
 /* O universo do Tatá — interações.
-   Sem JavaScript tudo continua acessível: cada peça é uma ligação para o ficheiro (imagem, filme
-   ou som) e as âncoras levam ao álbum e de volta ao ribeiro. Este script acrescenta os filtros,
+   Sem JavaScript tudo continua acessível: cada peça é uma ligação para o ficheiro (imagem ou
+   filme) e as âncoras levam ao álbum e de volta ao ribeiro. Este script acrescenta os filtros,
    a revelação progressiva, o leitor (anterior, seguinte, fechar) e o brilho na linha de água. */
 (() => {
   const dados = JSON.parse(document.getElementById('acervo-dados').textContent);
@@ -18,8 +18,8 @@
   let filtro = 'tudo';
   let limite = PASSO;
 
-  const nomes = { tudo: 'peças', filme: 'filmes', imagem: 'imagens', som: 'sons' };
-  const nome1 = { tudo: 'peça', filme: 'filme', imagem: 'imagem', som: 'som' };
+  const nomes = { tudo: 'peças', filme: 'filmes', imagem: 'imagens' };
+  const nome1 = { tudo: 'peça', filme: 'filme', imagem: 'imagem' };
   const contaPecas = (t) => dados.filter((p) => t === 'tudo' || p.tipo === t).length;
 
   function aplicar() {
@@ -104,21 +104,11 @@
         btSom.textContent = comSom ? 'Som ligado' : 'Som desligado';
       });
       const pr = v.play(); if (pr && pr.catch) pr.catch(() => {});
-    } else if (p.tipo === 'imagem') {
+    } else {
       const img = new Image();
       img.src = p.inteira; img.alt = p.alt || p.titulo;
       img.width = p.w; img.height = p.h; img.decoding = 'async';
       palco.appendChild(img);
-    } else {
-      const caixa = document.createElement('div'); caixa.className = 'som';
-      const a = document.createElement('audio');
-      a.controls = true; a.preload = 'metadata'; a.src = p.audio;
-      a.setAttribute('aria-label', p.titulo);
-      const tr = document.createElement('p'); tr.className = 'transcricao';
-      tr.textContent = p.transcricao;
-      const nota = document.createElement('small'); nota.textContent = 'Transcrição da fala.';
-      tr.appendChild(nota);
-      caixa.append(a, tr); palco.appendChild(caixa);
     }
     titulo.textContent = p.titulo;
     legenda.textContent = p.tipo === 'filme' ? `${p.legenda} ${mmss(p.duracao)}${p.som ? '' : ' · sem som'}` : p.legenda;

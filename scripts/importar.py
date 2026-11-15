@@ -6,7 +6,7 @@ Uso:
 A pasta de originais (não versionada) tem um ficheiro por peça, com o identificador estável
 do Higgsfield como nome: <id>.mp4 | <id>.png | <id>.jpg | <id>.wav
 Para voltar a descarregar, basta guardar lá os ficheiros com esses nomes; este script não usa
-URLs da conta. Só as peças com estado integrado/recorte entram no site; duplicados, capturas
+URLs da conta. Só filmes e imagens com estado integrado/recorte entram no site; duplicados, capturas
 de duplicados e peças privadas ficam registados no inventário e não são servidos.
 
 Gera:
@@ -15,7 +15,6 @@ Gera:
   site/media/acervo/<slug>-{480,960}.{webp,jpg}  miniaturas e posters
   site/media/acervo/<slug>-1600.jpg              imagem inteira (só imagens)
   site/media/acervo/<slug>.vtt                   legendas, quando há fala
-  site/media/acervo/voz-do-tata.m4a              som
   site/acervo.json                               catálogo público (sem dados da conta)
 """
 import json, subprocess, sys, hashlib
@@ -30,6 +29,7 @@ OUT.mkdir(parents=True, exist_ok=True)
 INV = json.loads((ROOT / "inventario" / "inventario.json").read_text())
 
 SERVIR = {"integrado", "integrado-copia-limpa", "recorte-de-captura"}
+TIPOS_PUBLICADOS = {"filme", "imagem"}  # sons autónomos não são publicados
 
 # Legendas (texto do guião da voz, alinhado pelas pausas medidas na faixa de voz)
 FALA = [
@@ -75,11 +75,10 @@ def duracao(f):
                                           "-of", "csv=p=0", str(f)]).decode().strip())
 
 catalogo = []
-contagem = {"filme": 0, "imagem": 0, "som": 0}
 ficheiros_vistos = {}
 
 for p in INV["pecas"]:
-    if p.get("estado") not in SERVIR:
+    if p.get("estado") not in SERVIR or p.get("tipo") not in TIPOS_PUBLICADOS:
         continue
     slug, tipo = p["slug"], p["tipo"]
     item = {k: p[k] for k in ("slug", "tipo", "grupo", "ordem", "titulo", "legenda") if k in p}
@@ -116,30 +115,29 @@ for p in INV["pecas"]:
         with Image.open(OUT / f"{slug}-960.jpg") as r:
             w, h = r.size
         item.update(w=w, h=h, inteira=f"media/acervo/{slug}-1600.jpg", alt=p["alt"])
-    elif tipo == "som":
-        src = ORIG / f"{p['id']}.wav"
-        if precisa(f"{slug}.m4a"):
-            subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(src), "-map_metadata", "-1",
-                            "-c:a", "aac", "-b:a", "96k", "-movflags", "+faststart", str(OUT / f"{slug}.m4a")], check=True)
-        item.update(audio=f"media/acervo/{slug}.m4a", duracao=round(duracao(OUT / f"{slug}.m4a"), 1),
-                    transcricao=p["transcricao"])
-    if tipo != "som":
-        item["miniatura"] = f"media/acervo/{slug}"
-    contagem[tipo] += 1
+    item["miniatura"] = f"media/acervo/{slug}"
     catalogo.append(item)
 
 # ordem do álbum: pela ordem dos grupos no inventário e, dentro do grupo, pela ordem da variante
 ordem_grupos = list(INV["grupos"])
 catalogo.sort(key=lambda i: (ordem_grupos.index(i["grupo"]), i.get("ordem", 0)))
+contagem = {t: sum(1 for i in catalogo if i["tipo"] == t) for t in sorted(TIPOS_PUBLICADOS)}
 (ROOT / "site" / "acervo.json").write_text(json.dumps({"contagem": contagem, "pecas": catalogo}, ensure_ascii=False, indent=1))
 
 # reconciliação: inventário x ficheiros x catálogo
-servidos = {f.name for f in OUT.iterdir() if not f.name.startswith(".")}
+esperados = set()
 for i in catalogo:
-    if i["tipo"] == "filme": assert f"{i['slug']}.mp4" in servidos, i["slug"]
-    if i["tipo"] == "som": assert f"{i['slug']}.m4a" in servidos, i["slug"]
-    if i["tipo"] != "som": assert f"{i['slug']}-480.webp" in servidos, i["slug"]
-inv_servir = [p for p in INV["pecas"] if p.get("estado") in SERVIR]
+    esperados |= {f"{i['slug']}-{w}.{x}" for w in (480, 960) for x in ("jpg", "webp")}
+    if i["tipo"] == "filme": esperados.add(f"{i['slug']}.mp4")
+    if i["tipo"] == "imagem": esperados.add(f"{i['slug']}-1600.jpg")
+    if i.get("legendas"): esperados.add(Path(i["legendas"]).name)
+# remove da pasta de publicação o que já não pertence ao catálogo (ex.: a faixa de voz autónoma)
+for f in OUT.iterdir():
+    if f.is_file() and f.name not in esperados:
+        print("retirado da publicação:", f.name); f.unlink()
+servidos = {f.name for f in OUT.iterdir()}
+assert esperados <= servidos, esperados - servidos
+inv_servir = [p for p in INV["pecas"] if p.get("estado") in SERVIR and p.get("tipo") in TIPOS_PUBLICADOS]
 assert len(inv_servir) == len(catalogo)
 print(json.dumps(contagem), "| ficheiros:", len(servidos),
       "| MB:", round(sum(f.stat().st_size for f in OUT.iterdir()) / 1e6, 1))

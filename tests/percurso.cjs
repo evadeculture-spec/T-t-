@@ -1,8 +1,9 @@
-// Percorre a visita: abertura, leitor (filme, imagem, som), filtros, variantes, revelação progressiva,
+// Percorre a visita: abertura, leitor (filmes e imagens), filtros, variantes, revelação progressiva,
 // fecho e regresso. Uso: node tests/percurso.cjs [url]
 const { chromium } = require('playwright');
 const url = process.argv[2] || 'http://localhost:8080/';
 let falhas = 0;
+const TOTAL_PECAS = 27, TOTAL_GRUPOS = 15; // 19 filmes + 8 imagens; a faixa de voz autónoma não é publicada
 const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if (!cond) falhas++; };
 
 (async () => {
@@ -95,7 +96,7 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
     await p.click('.filtro[data-filtro="tudo"]');
     while (await p.isVisible('#mais')) { await p.click('#mais'); await p.waitForTimeout(80); }
     const nGrupos = await p.evaluate(() => [...document.querySelectorAll('.grupo')].filter((g) => !g.hidden).length);
-    ok(nGrupos === 16, `«Mostrar mais» revela todos os grupos (${nGrupos})`);
+    ok(nGrupos === TOTAL_GRUPOS, `«Mostrar mais» revela todos os grupos (${nGrupos})`);
 
     // Fecho e regresso
     ok(await p.evaluate(() => !/jo[aã]o|m[aá]rcia/i.test(document.body.innerText)), 'nenhum nome pessoal no texto visível');
@@ -132,8 +133,48 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
       }
       await p.click('#leitor-seg');
     }
-    ok(vistos.size === 28 && total === 28, `28 peças percorridas no leitor (${vistos.size})`);
-    ok(maus.length === 0, 'todas carregam (metadados de vídeo e som, imagens) ' + (maus.length ? JSON.stringify(maus) : ''));
+    ok(vistos.size === TOTAL_PECAS && total === TOTAL_PECAS, `${TOTAL_PECAS} peças percorridas no leitor (${vistos.size})`);
+    ok(maus.length === 0, 'todas carregam (metadados de vídeo, imagens) ' + (maus.length ? JSON.stringify(maus) : ''));
+    await ctx.close();
+  }
+
+  // Sem a secção «Som» (telemóvel): filtros, cartão, contagem e navegação
+  console.log('\nsem a secção «Som» (telemóvel 390×844)');
+  {
+    const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    const p = await ctx.newPage();
+    await p.goto(url);
+    const filtros = await p.$$eval('.filtro', (bs) => bs.map((x) => x.textContent.trim()));
+    ok(filtros.join('|') === 'Tudo|Filmes|Imagens', `filtros: ${filtros.join(', ')}`);
+    ok(await p.locator('.contagem').innerText().then((t) => !/som/i.test(t)), `contagem da abertura: ${(await p.locator('.contagem').innerText()).replace(/\s+/g, ' ')}`);
+    ok(await p.evaluate(() => !document.querySelector('.peca--som, [data-tipo="som"], a[href$=".m4a"], #onda-som')), 'sem cartão «A voz do Tatá», onda ou ligação à faixa');
+    ok(await p.evaluate(() => !/A voz do Tatá|Ouvir ·/.test(document.body.innerText)), 'texto «A voz do Tatá» e «Ouvir» ausentes da página');
+    ok(await p.evaluate(() => !JSON.parse(document.getElementById('acervo-dados').textContent).some((x) => x.tipo === 'som' || x.audio)), 'catálogo público sem faixa de som');
+    const estado = await p.textContent('#album-estado');
+    ok(estado.startsWith(`${TOTAL_PECAS} peças em ${TOTAL_GRUPOS} grupos`), `estado em «Tudo»: ${estado}`);
+    const r = await p.request.get(new URL('media/acervo/voz-do-tata.m4a', url).href);
+    ok(r.status() === 404, `faixa autónoma não publicada (HTTP ${r.status()})`);
+    // percorrer «Tudo» com Seguinte e Anterior: nenhuma faixa de som
+    await p.click('.grupo .peca');
+    const total = +(await p.textContent('#leitor-contador')).split('/')[1];
+    const titulos = [];
+    let comAudio = 0;
+    for (let k = 0; k < total; k++) { titulos.push(await p.textContent('#leitor-titulo')); comAudio += await p.locator('#leitor audio').count(); await p.click('#leitor-seg'); }
+    for (let k = 0; k < 3; k++) await p.click('#leitor-ant');
+    ok(total === TOTAL_PECAS && comAudio === 0 && !titulos.includes('A voz do Tatá') && new Set(titulos).size === TOTAL_PECAS, `Anterior/Seguinte em «Tudo»: ${total} peças, nenhuma faixa de som`);
+    await p.keyboard.press('Escape');
+    // o filme narrado mantém o som, as legendas e o controlo de volume
+    const narrado = p.locator('a[aria-label^="Ver o filme «A história, com a voz do Tatá»"]');
+    await p.click('.filtro[data-filtro="filme"]');
+    while (await p.isVisible('#mais')) await p.click('#mais');
+    await narrado.scrollIntoViewIfNeeded(); await narrado.click();
+    await p.waitForSelector('#leitor[open] video');
+    ok(!(await p.isHidden('#leitor-som')), 'botão de som visível no filme narrado');
+    await p.click('#leitor-som');
+    await p.waitForFunction(() => { const v = document.querySelector('#leitor video'); return v.currentTime > 1.5; }, null, { timeout: 15000 }).catch(() => {});
+    const a = await p.evaluate(() => { const v = document.querySelector('#leitor video'); return { m: v.muted, vol: v.volume, t: v.currentTime, bytes: v.webkitAudioDecodedByteCount, tr: v.textTracks.length && v.textTracks[0].cues ? v.textTracks[0].cues.length : 0 }; });
+    ok(!a.m && a.vol > 0 && a.bytes > 0, `som do filme narrado a tocar (áudio descodificado: ${a.bytes} bytes, ${a.t.toFixed(1)} s)`);
+    ok(a.tr === 6, `legendas do filme narrado (${a.tr} deixas)`);
     await ctx.close();
   }
 
@@ -171,7 +212,7 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
     const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, javaScriptEnabled: false });
     const p = await ctx.newPage(); await p.goto(url);
     const n = await p.evaluate(() => [...document.querySelectorAll('.grupo')].filter((g) => getComputedStyle(g).display !== 'none').length);
-    ok(n === 16, `todos os grupos visíveis sem JavaScript (${n})`);
+    ok(n === TOTAL_GRUPOS, `todos os grupos visíveis sem JavaScript (${n})`);
     ok(await p.getAttribute('.acao--principal', 'href') === 'media/acervo/descoberta.mp4', '«Ver a descoberta» liga ao ficheiro do filme');
     await ctx.close();
   }

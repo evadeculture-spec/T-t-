@@ -3,7 +3,7 @@
 - <!--#include caminho -->  insere o SVG correspondente de site/ (inline, para animar e herdar cores)
 - {{ALBUM}}                 álbum completo gerado a partir de site/acervo.json (funciona sem JavaScript)
 - {{ACERVO_JSON}}           os mesmos dados para o leitor (só campos públicos)
-- {{N_FILMES}} {{N_IMAGENS}} {{N_SONS}} e plurais: contagens reais do acervo
+- {{N_FILMES}} {{N_IMAGENS}} e plurais: contagens reais do acervo
 - {{URL}}                   domínio de produção (SITE_URL ou o valor por omissão)
 """
 import html, json, os, re
@@ -27,13 +27,11 @@ def imagem(p, sizes, classe="", carregar="lazy"):
             f'width="{p["w"]}" height="{p["h"]}" loading="{carregar}" decoding="async" alt="{e(alt)}"></picture>')
 
 def destino(p):
-    return p.get("video") or p.get("inteira") or p.get("audio")
+    return p.get("video") or p.get("inteira")
 
 def rotulo(p):
     if p["tipo"] == "filme":
         return f'Ver o filme «{p["titulo"]}», {mmss(p["duracao"])}'
-    if p["tipo"] == "som":
-        return f'Ouvir «{p["titulo"]}», {mmss(p["duracao"])}'
     return f'Ver a imagem «{p["titulo"]}» inteira'
 
 grupos = {}
@@ -47,14 +45,9 @@ for g, lista in grupos.items():
     tipo = pri["tipo"]
     n = len(lista)
     versoes = f'<span class="grupo__n">{n} versões</span>' if n > 1 else ""
-    if tipo == "som":
-        corpo = (f'<a class="peca peca--som" href="{e(destino(pri))}" data-i="{pri["i"]}" aria-label="{e(rotulo(pri))}">'
-                 f'<svg class="peca__onda" viewBox="0 0 240 60" aria-hidden="true" focusable="false"><use href="#onda-som"/></svg>'
-                 f'<span class="peca__selo">Ouvir · {mmss(pri["duracao"])}</span></a>')
-    else:
-        selo = f'<span class="peca__selo"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5v13l11-6.5z"/></svg>{mmss(pri["duracao"])}</span>' if tipo == "filme" else ""
-        corpo = (f'<a class="peca" href="{e(destino(pri))}" data-i="{pri["i"]}" aria-label="{e(rotulo(pri))}">'
-                 f'{imagem(pri, "(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 100vw")}{selo}</a>')
+    selo = f'<span class="peca__selo"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5v13l11-6.5z"/></svg>{mmss(pri["duracao"])}</span>' if tipo == "filme" else ""
+    corpo = (f'<a class="peca" href="{e(destino(pri))}" data-i="{pri["i"]}" aria-label="{e(rotulo(pri))}">'
+             f'{imagem(pri, "(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 100vw")}{selo}</a>')
     var = ""
     if resto:
         itens = "".join(
@@ -69,9 +62,9 @@ for g, lista in grupos.items():
         f'<p class="grupo__legenda">{e(pri["legenda"])}</p></div>{var}</article>')
 
 publico = [{k: p[k] for k in ("slug", "tipo", "grupo", "grupoTitulo", "titulo", "legenda", "w", "h", "video", "inteira",
-                              "audio", "duracao", "som", "legendas", "alt", "miniatura", "transcricao") if k in p}
+                              "duracao", "som", "legendas", "alt", "miniatura") if k in p}
            for p in pecas]
-c = acervo["contagem"]
+c = {t: sum(1 for p in pecas if p["tipo"] == t) for t in ("filme", "imagem")}  # contado do que é publicado
 plural = lambda n, um, varios: f"{n} {um if n == 1 else varios}"
 
 out = (ROOT / "src" / "index.html").read_text()
@@ -80,7 +73,6 @@ out = (out.replace("{{ALBUM}}", "\n".join(cartoes))
           .replace("{{ACERVO_JSON}}", json.dumps(publico, ensure_ascii=False).replace("</", "<\\/"))
           .replace("{{N_FILMES}}", plural(c["filme"], "filme", "filmes"))
           .replace("{{N_IMAGENS}}", plural(c["imagem"], "imagem", "imagens"))
-          .replace("{{N_SONS}}", plural(c["som"], "som", "sons"))
           .replace("{{N_GRUPOS}}", str(len(grupos)))
           .replace("{{URL}}", URL))
 assert "{{" not in out, re.findall(r"\{\{\w+\}\}", out)
