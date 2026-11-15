@@ -239,6 +239,67 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
     await ctx.close();
   }
 
+  // Corrente contínua: presente em todas as zonas e estável quando a página muda
+  const desvio = (A, B, f = () => true) => {
+    const d = Object.keys(A).filter((k) => B[k] && f(A[k])).map((k) => Math.hypot(A[k][0] - B[k][0], A[k][1] - B[k][1])).sort((x, y) => x - y);
+    return { n: d.length, max: d.length ? d[d.length - 1] : 0, med: d.length ? d[d.length >> 1] : 0, p95: d.length ? d[Math.floor(d.length * 0.95)] : 0 };
+  };
+  for (const [w, h, nome] of [[390, 844, 'telemóvel'], [820, 1180, 'iPad vertical'], [1180, 820, 'iPad horizontal'], [1440, 900, 'computador']]) {
+    console.log(`\ncorrente contínua — ${nome} ${w}×${h}`);
+    const toque = w < 1300;
+    const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: toque, isMobile: toque && w < 900 });
+    const p = await ctx.newPage();
+    await p.goto(url); await p.waitForTimeout(900);
+    const visiveis = async () => { await p.waitForTimeout(300); return +(await p.getAttribute('#corrente', 'data-visiveis')); };
+    const ir = (y) => p.evaluate((y) => scrollTo({ top: y, behavior: 'instant' }), y);
+    const topoDe = (sel) => p.evaluate((s) => document.querySelector(s).getBoundingClientRect().top + scrollY, sel);
+    const amostra = () => p.evaluate(() => window.__corrente.amostra());
+    const zonas = {};
+    zonas['abertura'] = await visiveis();
+    await ir(await topoDe('#grupo-ramo') - h * 0.3); zonas['meio do álbum'] = await visiveis();
+    // scroll: em coordenadas da página, cada grão só se move com a corrente
+    let t0 = Date.now(); const s1 = await amostra();
+    await ir(await topoDe('#grupo-ramo') - h * 0.3 + Math.round(h * 0.3)); await p.waitForTimeout(40);
+    const s2 = await amostra(); let dt = (Date.now() - t0) / 1000;
+    const ds = desvio(s1, s2);
+    ok(ds.n > 20 && ds.p95 < 12 + 45 * dt && ds.max < 150, `scroll: ${ds.n} grãos seguidos, desvio p95 ${ds.p95.toFixed(1)} px (máx. ${ds.max.toFixed(0)}) em ${dt.toFixed(2)} s`);
+    // «Mostrar mais»: os grãos acima do botão não saltam
+    const yMais = await topoDe('#mais');
+    await ir(yMais - h * 0.8); await p.waitForTimeout(200);
+    t0 = Date.now(); const m1 = await amostra();
+    await p.click('#mais'); await p.waitForTimeout(200);
+    const m2 = await amostra(); dt = (Date.now() - t0) / 1000;
+    const dm = desvio(m1, m2, (q) => q[1] < yMais - 20);
+    ok(dm.n > 20 && dm.p95 < 12 + 45 * dt && dm.max < 150, `«Mostrar mais»: ${dm.n} grãos acima do botão sem salto (p95 ${dm.p95.toFixed(1)} px, máx. ${dm.max.toFixed(0)} em ${dt.toFixed(2)} s)`);
+    // filtro: o que está acima da grelha mantém-se
+    const yGrelha = await topoDe('#grelha');
+    await ir(yGrelha - h * 0.75); await p.waitForTimeout(200);
+    t0 = Date.now(); const f1 = await amostra();
+    await p.click('.filtro[data-filtro="imagem"]'); await p.waitForTimeout(200);
+    const f2 = await amostra(); dt = (Date.now() - t0) / 1000;
+    const df = desvio(f1, f2, (q) => q[1] < yGrelha - 20);
+    ok(df.n > 20 && df.p95 < 12 + 45 * dt && df.max < 150, `filtro: ${df.n} grãos acima da grelha sem salto (p95 ${df.p95.toFixed(1)} px, máx. ${df.max.toFixed(0)} em ${dt.toFixed(2)} s)`);
+    await p.click('.filtro[data-filtro="tudo"]');
+    while (await p.isVisible('#mais')) await p.click('#mais');
+    await p.waitForTimeout(1300);
+    await ir(await topoDe('#grupo-aceno') - h * 0.3); zonas['depois de «Mostrar mais»'] = await visiveis();
+    await ir(await topoDe('#tata') - h * 0.25); zonas['zona creme'] = await visiveis();
+    await ir(await topoDe('.fecho__imagem') - h * 0.2); zonas['fecho'] = await visiveis();
+    for (const [z, n] of Object.entries(zonas)) ok(n > (w < 700 ? 60 : 120), `corrente presente: ${z} (${n} grãos visíveis)`);
+    // rotação: transição gradual, sem teletransporte
+    if (toque) {
+      await ir(await topoDe('#grupo-ramo') - h * 0.3); await p.waitForTimeout(300);
+      const r0 = await amostra();
+      await p.setViewportSize({ width: h, height: w });
+      await p.waitForTimeout(140); const r1 = await amostra();
+      await p.waitForTimeout(1400); const r2 = await amostra();
+      const cedo = desvio(r0, r1), fim = desvio(r0, r2);
+      ok(cedo.med <= Math.max(20, fim.med * 0.5), `rotação: deslocação gradual (mediana ${cedo.med.toFixed(0)} px logo após, ${fim.med.toFixed(0)} px no fim)`);
+      ok(+(await p.getAttribute('#corrente', 'data-visiveis')) > 30, 'rotação: corrente recomposta para o novo formato');
+    }
+    await ctx.close();
+  }
+
   // Ligação móvel simulada
   console.log('\nligação móvel simulada (Fast 3G, 390×844)');
   {
