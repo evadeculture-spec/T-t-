@@ -103,3 +103,30 @@ for i in range(84, 118, 6):  # pontos em cruz no fim, como a costura do peito
     f'<path d="{"".join(ticks)}" fill="none" stroke="var(--linha)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>'
     "</svg>\n")
 print("ok")
+
+# 4. Linha de água: o reflexo dourado da estrela desce da cena e corre até ao primeiro fotograma do álbum
+p = ((1010, 6), (900, 70), (420, 40), (70, 152))
+n = 140
+pts = [bez(*p, i/n) for i in range(n+1)]
+cima, baixo = [], []
+for i, (x, y) in enumerate(pts):
+    t = i/n
+    (x2, y2) = pts[min(i+1, n)] if i < n else pts[i]
+    (x1, y1) = pts[max(i-1, 0)]
+    a = math.atan2(y2-y1, x2-x1) + math.pi/2
+    w = 0.6 + 3.4*math.sin(math.pi*min(1, t*1.4))**0.7*(1-0.55*t) + 0.5*math.sin(t*38)
+    cima.append((x+math.cos(a)*w, y+math.sin(a)*w)); baixo.append((x-math.cos(a)*w, y-math.sin(a)*w))
+forma = "M" + " L".join(f"{f(a)} {f(b)}" for a, b in cima + baixo[::-1]) + "Z"
+centro = "M" + " L".join(f"{f(x)} {f(y)}" for x, y in pts)
+marcas = []
+for (x0, y0, L, wm) in ((960, 30, 70, 1.6), (880, 54, 46, 1.2), (560, 64, 90, 1.4), (300, 96, 60, 1.1), (180, 130, 40, 0.9)):
+    s, c = ripple(x0, x0+L, y0, 1.2, 1.0, wm, x0/50)
+    marcas.append(f'<path class="agua-marca" d="{s}"/>')
+(OUT / "linha-agua.svg").write_text(
+    '<svg class="vinheta-agua" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 160" preserveAspectRatio="none" aria-hidden="true" focusable="false">'
+    '<defs><linearGradient id="agua-cor" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--estrela)"/>'
+    '<stop offset=".28" stop-color="var(--estrela-luz)" stop-opacity=".85"/><stop offset=".55" stop-color="var(--onda)"/>'
+    '<stop offset="1" stop-color="var(--onda-fina)"/></linearGradient></defs>'
+    + "".join(marcas) + f'<path class="agua-linha" d="{forma}" fill="url(#agua-cor)"/>'
+    f'<path class="agua-brilho" d="{centro}" pathLength="100"/></svg>\n')
+print("linha de água ok")

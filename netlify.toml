@@ -1,5 +1,5 @@
-# Site estático: a pasta site/ já contém apenas os ficheiros públicos.
-# (as capturas de ecrã completas e os originais de trabalho nunca entram nesta pasta)
+# Site estático: a pasta site/ contém apenas os ficheiros públicos.
+# Originais, capturas completas e o inventário de trabalho nunca entram nesta pasta.
 [build]
   publish = "site"
   command = ""
@@ -7,12 +7,22 @@
 [[headers]]
   for = "/media/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=604800"
 
 [[headers]]
   for = "/fonts/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.vtt"
+  [headers.values]
+    Content-Type = "text/vtt; charset=utf-8"
+
+[[headers]]
+  for = "/*.m4a"
+  [headers.values]
+    Content-Type = "audio/mp4"
 
 [[headers]]
   for = "/*"
